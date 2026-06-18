@@ -67,7 +67,7 @@ print(error)
 | 应用启动 | `app` | `launch` | 成功 / 启动恢复 |
 | 进入观影模式开始 | `cinemaMode` | `enter.start` | 当前 phase |
 | 保存 presentation 快照 | `presentation` | `snapshot.capture` | 成功 / 失败 |
-| 设置 presentation options | `presentation` | `options.apply` | 成功 / 失败 |
+| 设置 presentation options | `presentation` | `options.apply` | 成功 / 失败 / activation policy / 实际 options / 前后台应用 / 当前 Space 锚点 |
 | 显示浮窗 | `floatingPanel` | `show` | 成功 / 失败 |
 | 鼠标状态变化 | `pointer` | `visibility.change` | debug 级别，状态变化即可 |
 | 退出开始 | `cinemaMode` | `exit.start` | 当前 phase |
@@ -88,6 +88,7 @@ print(error)
 
 允许记录：
 
+- phase、module、action、系统 options raw value、activation policy、frontmost app 名称、锚点 frame 等脱敏调试字段。
 - 功能状态，例如 `idle`、`active`、`recovering`。
 - 非敏感错误类型。
 - 浮窗 anchor，例如 `bottomRight`。
@@ -109,3 +110,5 @@ print(error)
 | 日期 | 变更内容 | 原因 |
 |------|----------|------|
 | 2026-06-18 | 初始化日志系统设计。 | 文档阶段。 |
+| 2026-06-19 | 明确允许公开记录脱敏调试字段。 | 排查 presentation options 生效问题。 |
+| 2026-06-19 | 补充当前 Space 切换排查所需日志字段。 | 排查启用观影模式时跳转到其他桌面的问题。 |

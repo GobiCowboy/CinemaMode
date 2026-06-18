@@ -4,6 +4,7 @@ import CinemaModeCore
 
 struct MenuBarMenuView: View {
     @ObservedObject var service: CinemaModeService
+    let dismissMenu: () -> Void
 
     var body: some View {
         Group {
@@ -41,6 +42,7 @@ struct MenuBarMenuView: View {
     private var actionButtons: some View {
         VStack(alignment: .leading, spacing: 6) {
             Button {
+                dismissMenu()
                 service.enter()
             } label: {
                 Label("Enter Cinema Mode", systemImage: "play.rectangle")
@@ -48,6 +50,7 @@ struct MenuBarMenuView: View {
             .disabled(service.phase == .active || service.phase == .entering)
 
             Button {
+                dismissMenu()
                 service.exit()
             } label: {
                 Label("Exit Cinema Mode", systemImage: "stop.circle")

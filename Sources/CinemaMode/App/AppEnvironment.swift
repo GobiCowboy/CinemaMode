@@ -6,6 +6,7 @@ final class AppEnvironment: ObservableObject {
     let logger: SystemLogger
     let presentationController: SystemPresentationController
     let floatingPanelController: FloatingPanelController
+    let menuBarStatusItemController: MenuBarStatusItemController
     let pointerMonitor: SystemPointerActivityMonitor
     let service: CinemaModeService
 
@@ -25,5 +26,7 @@ final class AppEnvironment: ObservableObject {
             pointerMonitor: pointerMonitor,
             logger: logger
         )
+        self.menuBarStatusItemController = MenuBarStatusItemController(service: service, logger: logger)
+        self.menuBarStatusItemController.setVisible(true)
     }
 }

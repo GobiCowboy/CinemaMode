@@ -14,7 +14,7 @@
 
 用户通过一次点击进入低干扰观影状态：
 
-- 菜单栏里的 Cinema Mode 图标作为入口。
+- 菜单栏里的 Cinema Mode 状态栏图标作为入口。
 - 隐藏菜单栏和 Dock。
 - 保存进入前系统显示状态，方便退出时恢复。
 - 创建退出浮窗，让用户不会被困住。
@@ -23,12 +23,13 @@
 ## 3. 用户流程
 
 1. 用户打开 Safari、IINA、VLC 或其他内容应用。
-2. 用户点击菜单栏上的 Cinema Mode 图标。
+2. 用户点击菜单栏上的 Cinema Mode 状态栏图标。
 3. 系统检查当前是否已经处于观影模式。
 4. 系统保存当前 `NSApplication.PresentationOptions`。
-5. 系统应用观影模式 presentation options。
-6. 系统显示退出浮窗。
-7. 用户看到菜单栏和 Dock 消失，屏幕进入低干扰状态。
+5. 系统先收起状态栏 popover，并在当前 Space 建立透明激活锚点。
+6. 系统应用观影模式 presentation options。
+7. 系统显示退出浮窗。
+8. 用户留在当前桌面，同时看到菜单栏和 Dock 消失，屏幕进入低干扰状态。
 
 ## 4. 页面与交互
 
@@ -45,6 +46,8 @@
 |------|------|------|----------|
 | 当前状态 | `CinemaModeService` | 防止重复进入和错误流转 | `CinemaModeState` |
 | 原始 presentation options | `NSApplication.shared.presentationOptions` | 退出时恢复 | `PresentationSnapshot` |
+| activation policy | `NSApplication.shared` | 菜单栏 app 进入前临时切为 `.regular`，退出后恢复 `.accessory` | 运行时状态 |
+| 当前 Space 锚点位置 | 鼠标所在屏幕坐标 | 激活 app 时保持在当前桌面 | 运行时状态 |
 | 进入时间 | 系统时间 | 日志和状态追踪 | `CinemaModeState` |
 
 ## 6. 实现步骤
@@ -55,7 +58,7 @@
 | 2 | `CinemaMode/Platform/PresentationController.swift` | 封装保存和应用 presentation options | UI 层不能直接接触 AppKit options |
 | 3 | `Sources/CinemaModeCore/Services/CinemaModeService.swift` | 实现 `enter()` 编排 | 重复进入不会创建重复浮窗 |
 | 4 | `Sources/CinemaMode/Services/FloatingPanelController.swift` | 提供 `show()` 接口供进入后调用 | 进入成功后浮窗可见 |
-| 5 | `Sources/CinemaMode/App/CinemaModeApp.swift` | 提供菜单栏入口场景 | 用户一次点击即可触发 |
+| 5 | `Sources/CinemaMode/App/MenuBarStatusItemController.swift` | 创建入口并在进入前收起 popover | 进入时不遗留菜单弹层 |
 | 6 | `Sources/CinemaMode/Views/MenuBarMenuView.swift` | 接入进入按钮 | 用户一次点击即可触发 |
 | 7 | `Sources/CinemaMode/Services/SystemLogger.swift` | 记录进入流程日志 | 成功、失败路径有日志 |
 
@@ -74,7 +77,7 @@
 |------|-------|--------|--------|---------|---------|
 | 开始进入 | info | `cinemaMode` | `enter.start` | Start entering cinema mode | `phase` |
 | 状态快照成功 | info | `presentation` | `snapshot.capture` | Presentation snapshot captured | `optionsRawValue` |
-| 应用系统选项成功 | info | `presentation` | `options.apply` | Cinema presentation options applied | `optionsRawValue` |
+| 应用系统选项成功 | info | `presentation` | `options.apply` | Cinema presentation options applied | `optionsRawValue`, `actualOptionsRawValue`, `activationBefore`, `activationAfter`, `frontmostBefore`, `frontmostAfter`, `anchorFrame` |
 | 浮窗显示成功 | info | `floatingPanel` | `show` | Exit floating panel shown | `anchor` |
 | 重复进入 | warn | `cinemaMode` | `enter.ignored` | Enter ignored because mode is already active | `phase` |
 | 进入失败 | error | `cinemaMode` | `enter.failed` | Failed to enter cinema mode | `errorType` |
@@ -105,9 +108,10 @@
 | `Sources/CinemaModeCore/Services/CinemaModeService.swift` | 进入流程编排 | 已创建 |
 | `Sources/CinemaMode/Services/SystemPresentationController.swift` | 系统显示状态控制 | 已创建 |
 | `Sources/CinemaMode/Services/FloatingPanelController.swift` | 退出浮窗显示 | 已创建 |
-| `Sources/CinemaMode/App/CinemaModeApp.swift` | 菜单栏入口场景 | 已创建 |
+| `Sources/CinemaMode/App/MenuBarStatusItemController.swift` | 菜单栏入口 | 已创建 |
+| `Sources/CinemaMode/App/CinemaModeApp.swift` | 应用 scene 载体 | 已创建 |
 | `Sources/CinemaMode/Views/MenuBarMenuView.swift` | 用户入口 | 已创建 |
-| `Sources/CinemaMode/Views/MenuBarIconView.swift` | 菜单栏图标 | 已创建 |
+| `Sources/CinemaMode/Views/MenuBarIconView.swift` | 菜单栏图标样式 | 已创建 |
 | `Sources/CinemaMode/Services/SystemLogger.swift` | 统一日志 | 已创建 |
 
 ## 12. 验收
@@ -125,4 +129,6 @@
 
 | 日期 | 更新内容 | 涉及文件 |
 |------|----------|----------|
-| 2026-06-18 | 补充菜单栏图标入口描述与真实代码路径。 | 本文件、000、901 |
+| 2026-06-18 | 补充状态栏入口描述与真实代码路径。 | 本文件、000、901 |
+| 2026-06-19 | 补充进入前临时切换 activation policy 的行为和日志字段。 | 本文件、103、904 |
+| 2026-06-19 | 补充当前 Space 激活锚点和进入前关闭 popover 的流程。 | 本文件、103、206、904 |

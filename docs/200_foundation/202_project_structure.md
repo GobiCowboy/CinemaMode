@@ -24,6 +24,7 @@ project-root/
         CinemaModeApp.swift
         AppDelegate.swift
         AppEnvironment.swift
+        MenuBarStatusItemController.swift
       Views/
         MenuBarMenuView.swift
         MenuBarIconView.swift
@@ -58,7 +59,7 @@ project-root/
 | 路径 | 用途 | 规则 |
 |------|------|------|
 | `docs/` | 项目文档 | 按编号维护；代码变更时同步更新相关文档 |
-| `Sources/CinemaMode/App/` | 应用入口和生命周期 | 只做启动、注入和恢复编排 |
+| `Sources/CinemaMode/App/` | 应用入口和生命周期 | 只做启动、注入、状态栏入口和恢复编排 |
 | `Sources/CinemaMode/Views/` | SwiftUI 用户界面 | 不直接调用 AppKit 系统控制 |
 | `Sources/CinemaMode/Services/` | 平台实现和系统桥接 | 统一编排进入、退出、恢复 |
 | `Sources/CinemaMode/Support/` | 错误类型等基础设施 | 不保存隐私内容 |

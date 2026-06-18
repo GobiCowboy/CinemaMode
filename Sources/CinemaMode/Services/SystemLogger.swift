@@ -10,22 +10,22 @@ struct SystemLogger: CinemaModeLogging {
     }
 
     func debug(module: String, action: String, message: String, context: [String : String]?) {
-        logger.debug("[\(module, privacy: .public)] \(action, privacy: .public): \(message, privacy: .public) \(Self.format(context))")
+        logger.debug("[\(module, privacy: .public)] \(action, privacy: .public): \(message, privacy: .public) \(Self.format(context), privacy: .public)")
     }
 
     func info(module: String, action: String, message: String, context: [String : String]?) {
-        logger.info("[\(module, privacy: .public)] \(action, privacy: .public): \(message, privacy: .public) \(Self.format(context))")
+        logger.info("[\(module, privacy: .public)] \(action, privacy: .public): \(message, privacy: .public) \(Self.format(context), privacy: .public)")
     }
 
     func warn(module: String, action: String, message: String, context: [String : String]?) {
-        logger.warning("[\(module, privacy: .public)] \(action, privacy: .public): \(message, privacy: .public) \(Self.format(context))")
+        logger.warning("[\(module, privacy: .public)] \(action, privacy: .public): \(message, privacy: .public) \(Self.format(context), privacy: .public)")
     }
 
     func error(module: String, action: String, message: String, error: Error?, context: [String : String]?) {
         if let error {
-            logger.error("[\(module, privacy: .public)] \(action, privacy: .public): \(message, privacy: .public) \(String(describing: error), privacy: .public) \(Self.format(context))")
+            logger.error("[\(module, privacy: .public)] \(action, privacy: .public): \(message, privacy: .public) \(String(describing: error), privacy: .public) \(Self.format(context), privacy: .public)")
         } else {
-            logger.error("[\(module, privacy: .public)] \(action, privacy: .public): \(message, privacy: .public) \(Self.format(context))")
+            logger.error("[\(module, privacy: .public)] \(action, privacy: .public): \(message, privacy: .public) \(Self.format(context), privacy: .public)")
         }
     }
 
@@ -39,4 +39,3 @@ struct SystemLogger: CinemaModeLogging {
             .joined(separator: " ")
     }
 }
-
