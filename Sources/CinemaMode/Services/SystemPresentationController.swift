@@ -1,5 +1,4 @@
 import AppKit
-import Carbon.HIToolbox
 import Foundation
 import CinemaModeCore
 
@@ -13,47 +12,30 @@ final class SystemPresentationController: PresentationControlling {
 
     func captureSnapshot() throws -> PresentationSnapshot {
         let options = NSApp.presentationOptions.rawValue
-        var systemMode: SystemUIMode = 0
-        var systemOptions: SystemUIOptions = 0
-        GetSystemUIMode(&systemMode, &systemOptions)
-        let snapshot = PresentationSnapshot(
-            presentationOptionsRawValue: options,
-            systemUIModeRawValue: systemMode,
-            systemUIOptionsRawValue: systemOptions
-        )
+        let snapshot = PresentationSnapshot(presentationOptionsRawValue: options)
         logger.info(
             module: "presentation",
             action: "snapshot.capture",
             message: "Presentation snapshot captured",
-            context: [
-                "optionsRawValue": "\(options)",
-                "systemUIMode": "\(systemMode)",
-                "systemUIOptions": "\(systemOptions)"
-            ]
+            context: ["optionsRawValue": "\(options)"]
         )
         return snapshot
     }
 
     func applyCinemaMode(using snapshot: PresentationSnapshot) throws {
-        NSApp.setActivationPolicy(.regular)
-        NSApp.activate(ignoringOtherApps: true)
-        SetSystemUIMode(SystemUIMode(kUIModeAllHidden), 0)
+        let options: NSApplication.PresentationOptions = [.autoHideMenuBar, .autoHideDock]
+        NSApp.presentationOptions = options
         logger.info(
             module: "presentation",
             action: "options.apply",
-            message: "Cinema presentation mode applied",
-            context: [
-                "originalOptionsRawValue": "\(snapshot.presentationOptionsRawValue)",
-                "systemUIMode": "\(kUIModeAllHidden)"
-            ]
+            message: "Cinema presentation options applied",
+            context: ["optionsRawValue": "\(options.rawValue)", "originalOptionsRawValue": "\(snapshot.presentationOptionsRawValue)"]
         )
     }
 
     func restore(from snapshot: PresentationSnapshot) throws {
-        SetSystemUIMode(
-            SystemUIMode(snapshot.systemUIModeRawValue),
-            SystemUIOptions(snapshot.systemUIOptionsRawValue)
-        )
-        NSApp.setActivationPolicy(.accessory)
+        let restored = NSApplication.PresentationOptions(rawValue: snapshot.presentationOptionsRawValue)
+        NSApp.presentationOptions = restored
     }
 }
+

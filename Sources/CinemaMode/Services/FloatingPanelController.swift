@@ -50,7 +50,7 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
                 defer: false
             )
             panel.contentViewController = hostingController
-            panel.level = .floating
+            panel.level = .statusBar
             panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .transient, .ignoresCycle]
             panel.isReleasedWhenClosed = false
             panel.hidesOnDeactivate = false

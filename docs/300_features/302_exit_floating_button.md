@@ -16,6 +16,7 @@
 
 - 默认位于右下角。
 - 圆形、无边框、内容为 🎬。
+- 支持拖动到当前屏幕内的其他位置。
 - 鼠标静止时约 5% 透明度。
 - 鼠标移动时约 70% 透明度。
 - 鼠标悬停时 100% 透明度。
@@ -26,18 +27,20 @@
 2. 系统在右下角创建退出浮窗。
 3. 用户不移动鼠标，浮窗几乎不可见。
 4. 用户移动鼠标，浮窗变得可发现。
-5. 用户悬停浮窗，浮窗完全可见。
-6. 用户点击浮窗，触发 303 退出并恢复。
+5. 用户可以拖动浮窗到更顺手的位置。
+6. 用户悬停浮窗，浮窗完全可见。
+7. 用户点击浮窗，触发 303 退出并恢复。
 
 ## 4. 页面与交互
 
 | 页面 / 区域 | 元素 | 交互行为 | 状态 |
 |-------------|------|----------|------|
-| 右下角浮窗 | 圆形按钮 | 显示 🎬，无边框 | active |
+| 右下角浮窗 | 圆形按钮 | 显示 🎬，无边框，可拖动 | active |
 | 右下角浮窗 | opacity | 鼠标静止约 5% | idle pointer |
 | 右下角浮窗 | opacity | 鼠标移动约 70% | moving pointer |
 | 右下角浮窗 | opacity | 鼠标悬停 100% | hovering pointer |
 | 右下角浮窗 | 点击 | 调用 `CinemaModeService.exit()` | active |
+| 右下角浮窗 | 拖动 | 改变浮窗位置，限制在可见屏幕内 | active |
 
 ## 5. 涉及数据
 
@@ -52,20 +55,19 @@
 
 | 步骤 | 文件 / 模块 | 做什么 | 完成标准 |
 |:----:|------------|--------|----------|
-| 1 | `CinemaMode/Views/ExitFloatingView.swift` | 实现圆形 🎬 按钮和 hover 状态 | 视觉简洁，无边框 |
-| 2 | `CinemaMode/Platform/FloatingPanelController.swift` | 创建浮动 panel 并承载 SwiftUI view | 不依赖主窗口 |
-| 3 | `CinemaMode/Platform/PointerActivityMonitor.swift` | 监听鼠标移动和静止 | 可输出 idle/moving |
-| 4 | `CinemaMode/Models/FloatingWindowState.swift` | 定义浮窗状态 | opacity 有明确范围 |
-| 5 | `CinemaMode/Stores/PreferencesStore.swift` | 保存默认 anchor | MVP 默认右下角 |
-| 6 | `CinemaMode/Services/CinemaModeService.swift` | 将浮窗点击连接到退出流程 | 点击后触发 303 |
+| 1 | `Sources/CinemaMode/Views/ExitFloatingView.swift` | 实现圆形 🎬 按钮、hover 状态和拖动 | 视觉简洁，无边框 |
+| 2 | `Sources/CinemaMode/Services/FloatingPanelController.swift` | 创建浮动 panel 并承载 SwiftUI view | 不依赖主窗口 |
+| 3 | `Sources/CinemaMode/Services/SystemPointerActivityMonitor.swift` | 监听鼠标移动和静止 | 可输出 idle/moving |
+| 4 | `Sources/CinemaModeCore/Models/FloatingWindowState.swift` | 定义浮窗状态 | opacity 有明确范围 |
+| 5 | `Sources/CinemaModeCore/Services/CinemaModeService.swift` | 将浮窗点击连接到退出流程 | 点击后触发 303 |
 
 ## 7. 接口 / 函数
 
 | 名称 | 类型 | 输入 | 输出 | 说明 |
 |------|------|------|------|------|
-| `FloatingPanelController.show(anchor:)` | function | `FloatingAnchor` | `Result<Void, AppError>` | 显示浮窗 |
-| `FloatingPanelController.updateOpacity(_:)` | function | Double | Void | 更新透明度 |
-| `FloatingPanelController.reposition()` | function | 无 | Void | 屏幕变化后重新定位 |
+| `FloatingPanelController.show(state:onExit:)` | function | `FloatingWindowState` | Void | 显示浮窗 |
+| `FloatingPanelController.update(pointerVisibility:)` | function | `PointerVisibilityState` | Void | 更新透明度 |
+| `FloatingPanelController.move(by:)` | function | `CGSize` | Void | 拖动时移动浮窗 |
 | `PointerActivityMonitor.start(onChange:)` | function | callback | Void | 开始监听鼠标状态 |
 | `PointerActivityMonitor.stop()` | function | 无 | Void | 停止监听 |
 | `ExitFloatingView.onExit` | callback | 无 | Void | 点击时触发退出 |
@@ -116,6 +118,7 @@
 | 鼠标静止 5% | 单测 + 代码审查 | 已通过 |
 | 鼠标移动 70% | 单测 + 代码审查 | 已通过 |
 | 鼠标悬停 100% | 代码审查 | 已通过 |
+| 可拖动到其他位置 | 手动验收 | 待验收 |
 | 多屏可见 | 需要后续手动验收 | 未验收 |
 | 日志正常输出 | 代码审查 + 单测 | 已通过 |
 | 文档索引已更新 | 000 和 901 已记录 | 已完成 |
@@ -124,4 +127,4 @@
 
 | 日期 | 更新内容 | 涉及文件 |
 |------|----------|----------|
-| 2026-06-18 | 初始化浮窗退出入口功能文档。 | 本文件、000、901 |
+| 2026-06-18 | 补充可拖动浮窗行为和真实代码路径。 | 本文件、000、901 |

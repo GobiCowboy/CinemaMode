@@ -22,8 +22,8 @@ log stream --predicate 'subsystem == "com.cinemamode.app"'
 
 | 功能编号 | 功能 | 验收方式 | 状态 |
 |----------|------|----------|------|
-| 301 | 进入观影模式 | 点击入口后菜单栏和 Dock 隐藏，浮窗出现，状态进入 active | 未验收 |
-| 302 | 浮窗退出入口 | 鼠标静止 5%，移动 70%，悬停 100%，默认右下角 | 未验收 |
+| 301 | 进入观影模式 | 点击菜单栏图标后菜单栏和 Dock 隐藏，浮窗出现，状态进入 active | 未验收 |
+| 302 | 浮窗退出入口 | 鼠标静止 5%，移动 70%，悬停 100%，默认右下角且可拖动 | 未验收 |
 | 303 | 退出并恢复 | 点击浮窗后恢复进入前 presentation options，浮窗关闭 | 未验收 |
 
 状态：未验收 / 验收中 / 已通过 / 已退回
@@ -34,7 +34,7 @@ log stream --predicate 'subsystem == "com.cinemamode.app"'
 |------|----------|
 | `CinemaModeService` | 状态机流转、重复进入、重复退出、失败恢复 |
 | `PresentationController` | 保存快照、合法 options 组合、恢复调用 |
-| `FloatingPanelController` | show / close 幂等、屏幕变化后的定位策略 |
+| `FloatingPanelController` | show / close 幂等、拖动、屏幕变化后的定位策略 |
 | `PointerActivityMonitor` | 静止、移动、悬停状态到透明度的映射 |
 | `PreferencesStore` | 后续如引入则覆盖默认值、偏好读写、无敏感数据 |
 | `Logger` | module / action 必填，敏感字段过滤 |
@@ -43,11 +43,12 @@ log stream --predicate 'subsystem == "com.cinemamode.app"'
 
 | 场景 | 方法 | 预期 |
 |------|------|------|
-| Safari YouTube | 打开视频页，点击进入 | 菜单栏和 Dock 隐藏，浮窗出现 |
-| 本地播放器 | 打开 IINA 或 VLC，点击进入 | 不影响播放，浮窗保留 |
+| Safari YouTube | 打开视频页，点击菜单栏图标进入 | 菜单栏和 Dock 隐藏，浮窗出现 |
+| 本地播放器 | 打开 IINA 或 VLC，点击菜单栏图标进入 | 不影响播放，浮窗保留 |
 | 鼠标静止 | 进入后停止移动鼠标 | 浮窗几乎不可见但仍在 |
 | 鼠标移动 | 移动鼠标 | 浮窗明显可发现 |
 | 鼠标悬停 | 移到浮窗上 | 浮窗完全可见，点击区域清晰 |
+| 拖动浮窗 | 拖住浮窗移动 | 浮窗可在可见屏幕内移动 |
 | 退出恢复 | 点击浮窗 | 菜单栏和 Dock 恢复到进入前 |
 | 重复点击 | 连续点击入口或退出 | 不创建多个浮窗，不重复破坏状态 |
 | 外接屏幕 | 切换主屏或拔插显示器 | 浮窗仍在可见屏幕右下角 |
@@ -64,6 +65,7 @@ log stream --predicate 'subsystem == "com.cinemamode.app"'
 | 无 `print` 调试 | `rg "print\\(" Sources Tests` | 通过 |
 | 无敏感信息泄露 | 代码审查 | 通过 |
 | 退出入口始终可见 | 需要后续手动验收 | 未验收 |
+| 菜单栏入口清晰 | 需要后续手动验收 | 未验收 |
 | 异常恢复可用 | 单元测试 + 后续手动验收 | 部分通过 |
 
 ## 6. 缺陷记录
@@ -81,3 +83,4 @@ log stream --predicate 'subsystem == "com.cinemamode.app"'
 | 日期 | 变更内容 | 原因 |
 |------|----------|------|
 | 2026-06-18 | 初始化测试和验收计划。 | 文档阶段。 |
+| 2026-06-18 | 补充菜单栏图标入口与可拖动浮窗验收点。 | 产品形态更新。 |

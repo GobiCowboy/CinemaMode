@@ -14,6 +14,7 @@
 
 用户通过一次点击进入低干扰观影状态：
 
+- 菜单栏里的 Cinema Mode 图标作为入口。
 - 隐藏菜单栏和 Dock。
 - 保存进入前系统显示状态，方便退出时恢复。
 - 创建退出浮窗，让用户不会被困住。
@@ -22,7 +23,7 @@
 ## 3. 用户流程
 
 1. 用户打开 Safari、IINA、VLC 或其他内容应用。
-2. 用户点击菜单栏上的 Cinema Mode 入口。
+2. 用户点击菜单栏上的 Cinema Mode 图标。
 3. 系统检查当前是否已经处于观影模式。
 4. 系统保存当前 `NSApplication.PresentationOptions`。
 5. 系统应用观影模式 presentation options。
@@ -52,27 +53,28 @@
 |:----:|------------|--------|----------|
 | 1 | `CinemaMode/Models/CinemaModeState.swift` | 定义状态机 phase | 覆盖 idle、entering、active、exiting、recovering、failed |
 | 2 | `CinemaMode/Platform/PresentationController.swift` | 封装保存和应用 presentation options | UI 层不能直接接触 AppKit options |
-| 3 | `CinemaMode/Services/CinemaModeService.swift` | 实现 `enter()` 编排 | 重复进入不会创建重复浮窗 |
-| 4 | `CinemaMode/Platform/FloatingPanelController.swift` | 提供 `show()` 接口供进入后调用 | 进入成功后浮窗可见 |
-| 5 | `CinemaMode/Views/MenuBarMenuView.swift` | 接入进入按钮 | 用户一次点击即可触发 |
-| 6 | `CinemaMode/Support/Logger.swift` | 记录进入流程日志 | 成功、失败路径有日志 |
+| 3 | `Sources/CinemaModeCore/Services/CinemaModeService.swift` | 实现 `enter()` 编排 | 重复进入不会创建重复浮窗 |
+| 4 | `Sources/CinemaMode/Services/FloatingPanelController.swift` | 提供 `show()` 接口供进入后调用 | 进入成功后浮窗可见 |
+| 5 | `Sources/CinemaMode/App/CinemaModeApp.swift` | 提供菜单栏入口场景 | 用户一次点击即可触发 |
+| 6 | `Sources/CinemaMode/Views/MenuBarMenuView.swift` | 接入进入按钮 | 用户一次点击即可触发 |
+| 7 | `Sources/CinemaMode/Services/SystemLogger.swift` | 记录进入流程日志 | 成功、失败路径有日志 |
 
 ## 7. 接口 / 函数
 
 | 名称 | 类型 | 输入 | 输出 | 说明 |
 |------|------|------|------|------|
-| `CinemaModeService.enter()` | async function | 无 | `Result<Void, AppError>` | 主进入流程 |
-| `PresentationController.capture()` | function | 无 | `PresentationSnapshot` | 保存进入前状态 |
-| `PresentationController.applyCinemaOptions()` | function | `PresentationSnapshot` | `Result<Void, AppError>` | 应用观影模式系统选项 |
-| `FloatingPanelController.show()` | function | anchor / opacity | `Result<Void, AppError>` | 显示退出浮窗 |
+| `CinemaModeService.enter()` | function | 无 | Void | 主进入流程 |
+| `SystemPresentationController.captureSnapshot()` | function | 无 | `PresentationSnapshot` | 保存进入前状态 |
+| `SystemPresentationController.applyCinemaMode(using:)` | function | `PresentationSnapshot` | Void | 应用观影模式系统选项 |
+| `FloatingPanelController.show(state:onExit:)` | function | anchor / opacity | Void | 显示退出浮窗 |
 
 ## 8. 日志设计
 
 | 场景 | level | module | action | message | context |
 |------|-------|--------|--------|---------|---------|
 | 开始进入 | info | `cinemaMode` | `enter.start` | Start entering cinema mode | `phase` |
-| 状态快照成功 | info | `presentation` | `snapshot.capture` | Presentation snapshot captured | `optionsSummary` |
-| 应用系统选项成功 | info | `presentation` | `options.apply` | Cinema presentation options applied | `optionsSummary` |
+| 状态快照成功 | info | `presentation` | `snapshot.capture` | Presentation snapshot captured | `optionsRawValue` |
+| 应用系统选项成功 | info | `presentation` | `options.apply` | Cinema presentation options applied | `optionsRawValue` |
 | 浮窗显示成功 | info | `floatingPanel` | `show` | Exit floating panel shown | `anchor` |
 | 重复进入 | warn | `cinemaMode` | `enter.ignored` | Enter ignored because mode is already active | `phase` |
 | 进入失败 | error | `cinemaMode` | `enter.failed` | Failed to enter cinema mode | `errorType` |
@@ -84,7 +86,7 @@
 | 检查项 | 结论 |
 |--------|------|
 | 已有类似功能？ | 无，MVP 首个核心功能 |
-| 已有类似实现？ | 无，需新增 `CinemaModeService` 和 `PresentationController` |
+| 已有类似实现？ | 无，需新增 `CinemaModeService` 和 `SystemPresentationController` |
 | 已有可复用能力？ | 日志接口按 206 设计 |
 | 命中待抽象记录？ | 是，`presentation options 保存 / 恢复` 和 `状态机流转保护` |
 
@@ -103,6 +105,7 @@
 | `Sources/CinemaModeCore/Services/CinemaModeService.swift` | 进入流程编排 | 已创建 |
 | `Sources/CinemaMode/Services/SystemPresentationController.swift` | 系统显示状态控制 | 已创建 |
 | `Sources/CinemaMode/Services/FloatingPanelController.swift` | 退出浮窗显示 | 已创建 |
+| `Sources/CinemaMode/App/CinemaModeApp.swift` | 菜单栏入口场景 | 已创建 |
 | `Sources/CinemaMode/Views/MenuBarMenuView.swift` | 用户入口 | 已创建 |
 | `Sources/CinemaMode/Views/MenuBarIconView.swift` | 菜单栏图标 | 已创建 |
 | `Sources/CinemaMode/Services/SystemLogger.swift` | 统一日志 | 已创建 |
@@ -122,4 +125,4 @@
 
 | 日期 | 更新内容 | 涉及文件 |
 |------|----------|----------|
-| 2026-06-18 | 初始化进入观影模式功能文档。 | 本文件、000、901 |
+| 2026-06-18 | 补充菜单栏图标入口描述与真实代码路径。 | 本文件、000、901 |

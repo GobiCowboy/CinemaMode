@@ -18,26 +18,37 @@ project-root/
     300_features/
     900_project_memory/
     990_archive/
-  CinemaMode/
-    App/
-      CinemaModeApp.swift
-      AppDelegate.swift
-      AppEnvironment.swift
-    Views/
-      MenuBarMenuView.swift
-      MenuBarIconView.swift
-      ExitFloatingView.swift
-    Services/
-      SystemLogger.swift
-      SystemPresentationController.swift
-      FloatingPanelController.swift
-      SystemPointerActivityMonitor.swift
-    Models/
-      CinemaModeState.swift
-      PresentationSnapshot.swift
-      FloatingWindowState.swift
-    Support/
-      AppError.swift
+  Sources/
+    CinemaMode/
+      App/
+        CinemaModeApp.swift
+        AppDelegate.swift
+        AppEnvironment.swift
+      Views/
+        MenuBarMenuView.swift
+        MenuBarIconView.swift
+        ExitFloatingView.swift
+      Services/
+        SystemLogger.swift
+        SystemPresentationController.swift
+        FloatingPanelController.swift
+        SystemPointerActivityMonitor.swift
+      Models/
+        CinemaModeState.swift
+        PresentationSnapshot.swift
+        FloatingWindowState.swift
+      Support/
+        AppError.swift
+    CinemaModeCore/
+      Services/
+        CinemaModeService.swift
+      Models/
+        CinemaModePhase.swift
+        FloatingAnchor.swift
+        PresentationSnapshot.swift
+        FloatingWindowState.swift
+      Support/
+        AppError.swift
   CinemaModeTests/
     CinemaModeServiceTests.swift
 ```
@@ -47,12 +58,14 @@ project-root/
 | 路径 | 用途 | 规则 |
 |------|------|------|
 | `docs/` | 项目文档 | 按编号维护；代码变更时同步更新相关文档 |
-| `CinemaMode/App/` | 应用入口和生命周期 | 只做启动、注入和恢复编排 |
-| `CinemaMode/Views/` | SwiftUI 用户界面 | 不直接调用 AppKit 系统控制 |
-| `CinemaMode/Services/` | 平台实现和系统桥接 | 统一编排进入、退出、恢复 |
-| `CinemaMode/Support/` | 错误类型等基础设施 | 不保存隐私内容 |
-| `CinemaMode/Models/` | 状态和数据模型 | 只放纯模型，不依赖 AppKit 窗口实例 |
-| `CinemaMode/Support/` | 日志、错误、扩展等基础设施 | 可被多层复用，不写业务流程 |
+| `Sources/CinemaMode/App/` | 应用入口和生命周期 | 只做启动、注入和恢复编排 |
+| `Sources/CinemaMode/Views/` | SwiftUI 用户界面 | 不直接调用 AppKit 系统控制 |
+| `Sources/CinemaMode/Services/` | 平台实现和系统桥接 | 统一编排进入、退出、恢复 |
+| `Sources/CinemaMode/Support/` | 错误类型等基础设施 | 不保存隐私内容 |
+| `Sources/CinemaMode/Models/` | 状态和数据模型 | 只放纯模型，不依赖 AppKit 窗口实例 |
+| `Sources/CinemaModeCore/Services/` | 共享业务服务 | 状态机与流程编排 |
+| `Sources/CinemaModeCore/Models/` | 共享状态和数据模型 | 只放纯模型，不依赖 AppKit 窗口实例 |
+| `Sources/CinemaModeCore/Support/` | 日志、错误、扩展等基础设施 | 可被多层复用，不写业务流程 |
 | `CinemaModeTests/` | 测试 | 与源码目录结构对应 |
 | `scripts/` | 本地开发脚本 | 脚本必须可重复执行，不写个人绝对路径 |
 
@@ -60,15 +73,15 @@ project-root/
 
 | 文件类型 | 放哪里 | 命名规则 |
 |----------|--------|----------|
-| App 入口 | `CinemaMode/App/` | `<AppName>App.swift`, `AppDelegate.swift` |
-| 页面 / UI | `CinemaMode/Views/` | 以主要视图命名，如 `MenuBarMenuView.swift` |
-| 可复用 UI | `CinemaMode/Views/Components/` | 以组件名命名 |
-| 业务逻辑 | `CinemaMode/Services/` | `<Domain>Service.swift` |
-| 平台桥接 | `CinemaMode/Services/` | `<Capability>Controller.swift` 或 `<Capability>Monitor.swift` |
-| 数据模型 | `CinemaModeCore/Models/` | 名词命名，如 `CinemaModePhase.swift` |
+| App 入口 | `Sources/CinemaMode/App/` | `<AppName>App.swift`, `AppDelegate.swift` |
+| 页面 / UI | `Sources/CinemaMode/Views/` | 以主要视图命名，如 `MenuBarMenuView.swift` |
+| 可复用 UI | `Sources/CinemaMode/Views/Components/` | 以组件名命名 |
+| 业务逻辑 | `Sources/CinemaModeCore/Services/` | `<Domain>Service.swift` |
+| 平台桥接 | `Sources/CinemaMode/Services/` | `<Capability>Controller.swift` 或 `<Capability>Monitor.swift` |
+| 数据模型 | `Sources/CinemaModeCore/Models/` | 名词命名，如 `CinemaModePhase.swift` |
 | 数据读写 | 后续若引入 | `<Entity>Store.swift` |
-| 日志模块 | `CinemaMode/Services/` | `SystemLogger.swift` |
-| 公共错误 | `CinemaModeCore/Support/` | `AppError.swift` |
+| 日志模块 | `Sources/CinemaMode/Services/` | `SystemLogger.swift` |
+| 公共错误 | `Sources/CinemaModeCore/Support/` | `AppError.swift` |
 | 测试 | `CinemaModeTests/` | `<TypeName>Tests.swift` |
 
 ## 4. 禁止事项
@@ -86,3 +99,4 @@ project-root/
 | 日期 | 变更内容 | 原因 |
 |------|----------|------|
 | 2026-06-18 | 初始化项目结构规划。 | 文档阶段。 |
+| 2026-06-18 | 对齐当前 `Sources/` 目录结构。 | 代码路径更新。 |
