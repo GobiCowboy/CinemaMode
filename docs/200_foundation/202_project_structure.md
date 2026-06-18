@@ -24,7 +24,8 @@ project-root/
       AppDelegate.swift
       AppEnvironment.swift
     Views/
-      MainControlView.swift
+      MenuBarMenuView.swift
+      MenuBarIconView.swift
       ExitFloatingView.swift
     Services/
       SystemLogger.swift
@@ -60,7 +61,7 @@ project-root/
 | 文件类型 | 放哪里 | 命名规则 |
 |----------|--------|----------|
 | App 入口 | `CinemaMode/App/` | `<AppName>App.swift`, `AppDelegate.swift` |
-| 页面 / UI | `CinemaMode/Views/` | 以主要视图命名，如 `MainControlView.swift` |
+| 页面 / UI | `CinemaMode/Views/` | 以主要视图命名，如 `MenuBarMenuView.swift` |
 | 可复用 UI | `CinemaMode/Views/Components/` | 以组件名命名 |
 | 业务逻辑 | `CinemaMode/Services/` | `<Domain>Service.swift` |
 | 平台桥接 | `CinemaMode/Services/` | `<Capability>Controller.swift` 或 `<Capability>Monitor.swift` |

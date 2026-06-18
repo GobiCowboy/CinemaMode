@@ -32,13 +32,16 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
             }
             let hostingController = NSHostingController(rootView: contentView)
             let panel = FloatingPanel(contentViewController: hostingController)
-            panel.level = .statusBar
+            panel.level = .floating
             panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .transient, .ignoresCycle]
             panel.isReleasedWhenClosed = false
             panel.hidesOnDeactivate = false
             panel.backgroundColor = .clear
             panel.isOpaque = false
-            panel.hasShadow = false
+            panel.hasShadow = true
+            panel.animationBehavior = .utilityWindow
+            panel.titleVisibility = .hidden
+            panel.titlebarAppearsTransparent = true
             self.panel = panel
         }
 
@@ -92,8 +95,8 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
         }
 
         let visibleFrame = NSScreen.main?.visibleFrame ?? NSScreen.screens.first?.visibleFrame ?? .zero
-        let size = CGSize(width: 56, height: 56)
-        let margin: CGFloat = 20
+        let size = CGSize(width: 72, height: 72)
+        let margin: CGFloat = 22
         let origin = CGPoint(
             x: visibleFrame.maxX - size.width - margin,
             y: visibleFrame.minY + margin

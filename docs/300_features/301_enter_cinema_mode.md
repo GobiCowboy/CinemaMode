@@ -22,7 +22,7 @@
 ## 3. 用户流程
 
 1. 用户打开 Safari、IINA、VLC 或其他内容应用。
-2. 用户点击 Cinema Mode 的进入入口。
+2. 用户点击菜单栏上的 Cinema Mode 入口。
 3. 系统检查当前是否已经处于观影模式。
 4. 系统保存当前 `NSApplication.PresentationOptions`。
 5. 系统应用观影模式 presentation options。
@@ -33,8 +33,8 @@
 
 | 页面 / 区域 | 元素 | 交互行为 | 状态 |
 |-------------|------|----------|------|
-| 主窗口或菜单栏入口 | 进入按钮 | 点击后调用 `CinemaModeService.enter()` | idle |
-| 主窗口或菜单栏入口 | 状态反馈 | 进入中避免重复点击 | entering |
+| 菜单栏入口 | 进入按钮 | 点击后调用 `CinemaModeService.enter()` | idle |
+| 菜单栏入口 | 状态反馈 | 进入中避免重复点击 | entering |
 | 系统屏幕 | 菜单栏 / Dock | 进入成功后隐藏或自动隐藏 | active |
 | 屏幕右下角 | 退出浮窗 | 进入成功后显示 | active |
 
@@ -54,7 +54,7 @@
 | 2 | `CinemaMode/Platform/PresentationController.swift` | 封装保存和应用 presentation options | UI 层不能直接接触 AppKit options |
 | 3 | `CinemaMode/Services/CinemaModeService.swift` | 实现 `enter()` 编排 | 重复进入不会创建重复浮窗 |
 | 4 | `CinemaMode/Platform/FloatingPanelController.swift` | 提供 `show()` 接口供进入后调用 | 进入成功后浮窗可见 |
-| 5 | `CinemaMode/Views/MainControlView.swift` | 接入进入按钮 | 用户一次点击即可触发 |
+| 5 | `CinemaMode/Views/MenuBarMenuView.swift` | 接入进入按钮 | 用户一次点击即可触发 |
 | 6 | `CinemaMode/Support/Logger.swift` | 记录进入流程日志 | 成功、失败路径有日志 |
 
 ## 7. 接口 / 函数
@@ -103,7 +103,8 @@
 | `Sources/CinemaModeCore/Services/CinemaModeService.swift` | 进入流程编排 | 已创建 |
 | `Sources/CinemaMode/Services/SystemPresentationController.swift` | 系统显示状态控制 | 已创建 |
 | `Sources/CinemaMode/Services/FloatingPanelController.swift` | 退出浮窗显示 | 已创建 |
-| `Sources/CinemaMode/Views/MainControlView.swift` | 用户入口 | 已创建 |
+| `Sources/CinemaMode/Views/MenuBarMenuView.swift` | 用户入口 | 已创建 |
+| `Sources/CinemaMode/Views/MenuBarIconView.swift` | 菜单栏图标 | 已创建 |
 | `Sources/CinemaMode/Services/SystemLogger.swift` | 统一日志 | 已创建 |
 
 ## 12. 验收
