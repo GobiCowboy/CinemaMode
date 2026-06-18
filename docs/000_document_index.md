@@ -36,9 +36,9 @@
 
 | 编号 | 文档 | 功能名称 | 状态 | 最后更新 |
 |------|------|----------|------|----------|
-| 301 | 300_features/301_enter_cinema_mode.md | 进入观影模式 | 未创建 | — |
-| 302 | 300_features/302_exit_floating_button.md | 浮窗退出入口 | 未创建 | — |
-| 303 | 300_features/303_exit_and_restore.md | 退出并恢复 | 未创建 | — |
+| 301 | 300_features/301_enter_cinema_mode.md | 进入观影模式 | 已完成 | 2026-06-18 |
+| 302 | 300_features/302_exit_floating_button.md | 浮窗退出入口 | 已完成 | 2026-06-18 |
+| 303 | 300_features/303_exit_and_restore.md | 退出并恢复 | 已完成 | 2026-06-18 |
 
 ## 900 项目记忆
 
