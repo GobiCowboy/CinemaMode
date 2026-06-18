@@ -5,6 +5,12 @@
 ```text
 project-root/
   README.md
+  Package.swift
+  script/
+    build_and_run.sh
+  .codex/
+    environments/
+      environment.toml
   docs/
     000_document_index.md
     100_requirements_architecture/
@@ -16,32 +22,23 @@ project-root/
     App/
       CinemaModeApp.swift
       AppDelegate.swift
+      AppEnvironment.swift
     Views/
       MainControlView.swift
       ExitFloatingView.swift
-      Components/
     Services/
-      CinemaModeService.swift
-    Platform/
-      PresentationController.swift
+      SystemLogger.swift
+      SystemPresentationController.swift
       FloatingPanelController.swift
-      PointerActivityMonitor.swift
-    Stores/
-      PreferencesStore.swift
-      RuntimeStateStore.swift
+      SystemPointerActivityMonitor.swift
     Models/
       CinemaModeState.swift
       PresentationSnapshot.swift
       FloatingWindowState.swift
     Support/
-      Logger.swift
       AppError.swift
   CinemaModeTests/
-    Services/
-    Platform/
-    Stores/
-  scripts/
-    build_and_run.sh
+    CinemaModeServiceTests.swift
 ```
 
 ## 2. 目录说明
@@ -51,9 +48,8 @@ project-root/
 | `docs/` | 项目文档 | 按编号维护；代码变更时同步更新相关文档 |
 | `CinemaMode/App/` | 应用入口和生命周期 | 只做启动、注入和恢复编排 |
 | `CinemaMode/Views/` | SwiftUI 用户界面 | 不直接调用 AppKit 系统控制 |
-| `CinemaMode/Services/` | 业务服务和状态机 | 统一编排进入、退出、恢复 |
-| `CinemaMode/Platform/` | AppKit 桥接 | 只放系统 UI、浮窗、鼠标活动等平台能力 |
-| `CinemaMode/Stores/` | 偏好和运行时状态存储 | 不保存隐私内容 |
+| `CinemaMode/Services/` | 平台实现和系统桥接 | 统一编排进入、退出、恢复 |
+| `CinemaMode/Support/` | 错误类型等基础设施 | 不保存隐私内容 |
 | `CinemaMode/Models/` | 状态和数据模型 | 只放纯模型，不依赖 AppKit 窗口实例 |
 | `CinemaMode/Support/` | 日志、错误、扩展等基础设施 | 可被多层复用，不写业务流程 |
 | `CinemaModeTests/` | 测试 | 与源码目录结构对应 |
@@ -67,11 +63,11 @@ project-root/
 | 页面 / UI | `CinemaMode/Views/` | 以主要视图命名，如 `MainControlView.swift` |
 | 可复用 UI | `CinemaMode/Views/Components/` | 以组件名命名 |
 | 业务逻辑 | `CinemaMode/Services/` | `<Domain>Service.swift` |
-| AppKit 桥接 | `CinemaMode/Platform/` | `<Capability>Controller.swift` 或 `<Capability>Monitor.swift` |
-| 数据模型 | `CinemaMode/Models/` | 名词命名，如 `CinemaModeState.swift` |
-| 数据读写 | `CinemaMode/Stores/` | `<Entity>Store.swift` |
-| 日志模块 | `CinemaMode/Support/` | `Logger.swift` |
-| 公共错误 | `CinemaMode/Support/` | `AppError.swift` |
+| 平台桥接 | `CinemaMode/Services/` | `<Capability>Controller.swift` 或 `<Capability>Monitor.swift` |
+| 数据模型 | `CinemaModeCore/Models/` | 名词命名，如 `CinemaModePhase.swift` |
+| 数据读写 | 后续若引入 | `<Entity>Store.swift` |
+| 日志模块 | `CinemaMode/Services/` | `SystemLogger.swift` |
+| 公共错误 | `CinemaModeCore/Support/` | `AppError.swift` |
 | 测试 | `CinemaModeTests/` | `<TypeName>Tests.swift` |
 
 ## 4. 禁止事项

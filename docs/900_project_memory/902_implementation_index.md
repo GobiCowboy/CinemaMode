@@ -2,12 +2,12 @@
 
 | 实现能力 | 首次出现功能 | 相关功能 | 当前位置 | 是否已抽象 | 说明 |
 |----------|-------------|----------|----------|------------|------|
-| 日志记录 | 206_logging_system.md | 全局 | `CinemaMode/Support/Logger.swift` | 规划中 | 基础设施，后续实现阶段创建 |
-| 观影模式状态机 | 301 | 301, 303 | `CinemaMode/Services/CinemaModeService.swift` | 规划中 | 统一管理进入、退出、恢复 |
-| presentation options 控制 | 301 | 301, 303 | `CinemaMode/Platform/PresentationController.swift` | 规划中 | 保存和恢复菜单栏 / Dock 状态 |
-| 退出浮窗控制 | 302 | 302, 303 | `CinemaMode/Platform/FloatingPanelController.swift` | 规划中 | 创建、定位、关闭浮窗 |
-| 鼠标活动监听 | 302 | 302 | `CinemaMode/Platform/PointerActivityMonitor.swift` | 规划中 | 将鼠标状态映射到透明度 |
-| 偏好读取 | 302 | 302 | `CinemaMode/Stores/PreferencesStore.swift` | 规划中 | MVP 只保存非敏感轻量偏好 |
+| 日志记录 | 206_logging_system.md | 全局 | `Sources/CinemaMode/Services/SystemLogger.swift` | 是 | 基础设施，已接入服务和平台层 |
+| 观影模式状态机 | 301 | 301, 303 | `Sources/CinemaModeCore/Services/CinemaModeService.swift` | 是 | 统一管理进入、退出、恢复 |
+| presentation options 控制 | 301 | 301, 303 | `Sources/CinemaMode/Services/SystemPresentationController.swift` | 是 | 保存和恢复菜单栏 / Dock 状态 |
+| 退出浮窗控制 | 302 | 302, 303 | `Sources/CinemaMode/Services/FloatingPanelController.swift` | 是 | 创建、定位、关闭浮窗 |
+| 鼠标活动监听 | 302 | 302 | `Sources/CinemaMode/Services/SystemPointerActivityMonitor.swift` | 是 | 将鼠标状态映射到透明度 |
+| 偏好读取 | 302 | 302 | 待实现 | 否 | MVP 当前仍使用默认右下角，后续再落盘 |
 
 ## 记录规则
 
@@ -36,3 +36,4 @@
 | 日期 | 变更内容 |
 |------|----------|
 | 2026-06-18 | 初始化实现索引。 |
+| 2026-06-18 | 完成核心实现并更新真实文件路径。 |

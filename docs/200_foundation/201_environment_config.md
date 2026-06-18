@@ -16,14 +16,14 @@
 当前阶段尚未创建 Xcode 工程。实现阶段创建工程后，以实际 scheme 为准。
 
 ```bash
-# 构建
-xcodebuild -scheme CinemaMode -configuration Debug build
-
 # 运行测试
-xcodebuild test -scheme CinemaMode -configuration Debug
+swift test
 
-# 启动应用
-open build/Debug/CinemaMode.app
+# 运行应用
+./script/build_and_run.sh
+
+# 仅验证构建和启动
+./script/build_and_run.sh --verify
 ```
 
 如后续采用 Swift Package + 生成工程方式，需要同步更新本文件。
@@ -43,7 +43,10 @@ MVP 不依赖环境变量。
 | `.gitignore` | 忽略 `.DS_Store`、构建产物和 Xcode 用户数据 | 是 |
 | `README.md` | 项目说明 | 是 |
 | `docs/` | 项目需求、架构、功能和记忆文档 | 是 |
-| `CinemaMode.xcodeproj` | 后续 Xcode 工程 | 是 |
+| `Package.swift` | SwiftPM 工程入口 | 是 |
+| `script/build_and_run.sh` | 本地构建、打包和启动脚本 | 是 |
+| `.codex/environments/environment.toml` | Codex Run 按钮配置 | 是 |
+| `dist/CinemaMode.app` | 运行时生成的 app bundle | 否 |
 | `*.xcuserdata/` | Xcode 用户本地状态 | 否 |
 
 ## 5. 本地数据位置

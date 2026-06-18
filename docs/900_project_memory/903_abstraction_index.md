@@ -14,9 +14,9 @@
 
 | 逻辑名称 | 出现功能 | 重复次数 | 当前状态 | 建议处理 | 关联实现 |
 |----------|----------|:--------:|----------|----------|----------|
-| presentation options 保存 / 恢复 | 301, 303 | 2 | 待抽象 | 从一开始抽象到 `PresentationController` | 902: presentation options 控制 |
-| 浮窗 show / close 幂等处理 | 302, 303 | 2 | 待抽象 | 从一开始抽象到 `FloatingPanelController` | 902: 退出浮窗控制 |
-| 状态机流转保护 | 301, 303 | 2 | 待抽象 | 从一开始抽象到 `CinemaModeService` | 902: 观影模式状态机 |
+| presentation options 保存 / 恢复 | 301, 303 | 2 | 已抽象 | 已集中到 `SystemPresentationController` | 902: presentation options 控制 |
+| 浮窗 show / close 幂等处理 | 302, 303 | 2 | 已抽象 | 已集中到 `FloatingPanelController` | 902: 退出浮窗控制 |
+| 状态机流转保护 | 301, 303 | 2 | 已抽象 | 已集中到 `CinemaModeService` | 902: 观影模式状态机 |
 
 ## 记录规则
 
@@ -37,3 +37,4 @@
 | 日期 | 变更内容 |
 |------|----------|
 | 2026-06-18 | 初始化待抽象索引。 |
+| 2026-06-18 | 301-303 初版实现已完成，相关逻辑均已抽象。 |

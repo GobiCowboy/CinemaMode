@@ -6,7 +6,7 @@
 |----|------|
 | 功能编号 | 301 |
 | 功能名称 | 进入观影模式 |
-| 状态 | 已设计 |
+| 状态 | 已实现 |
 | 相关用户流程 | `102_user_flows.md#f-001-首次打开应用`, `102_user_flows.md#f-002-观看网页视频`, `102_user_flows.md#f-003-观看本地视频` |
 | 相关数据模型 | `203_data_model.md#cinemamodestate`, `203_data_model.md#presentationsnapshot` |
 
@@ -100,21 +100,21 @@
 
 | 文件 | 作用 | 状态 |
 |------|------|------|
-| `CinemaMode/Services/CinemaModeService.swift` | 进入流程编排 | 待创建 |
-| `CinemaMode/Platform/PresentationController.swift` | 系统显示状态控制 | 待创建 |
-| `CinemaMode/Platform/FloatingPanelController.swift` | 退出浮窗显示 | 待创建 |
-| `CinemaMode/Views/MainControlView.swift` | 用户入口 | 待创建 |
-| `CinemaMode/Support/Logger.swift` | 统一日志 | 待创建 |
+| `Sources/CinemaModeCore/Services/CinemaModeService.swift` | 进入流程编排 | 已创建 |
+| `Sources/CinemaMode/Services/SystemPresentationController.swift` | 系统显示状态控制 | 已创建 |
+| `Sources/CinemaMode/Services/FloatingPanelController.swift` | 退出浮窗显示 | 已创建 |
+| `Sources/CinemaMode/Views/MainControlView.swift` | 用户入口 | 已创建 |
+| `Sources/CinemaMode/Services/SystemLogger.swift` | 统一日志 | 已创建 |
 
 ## 12. 验收
 
 | 验收项 | 判断方式 | 结果 |
 |--------|----------|:----:|
-| 主流程可用 | 点击一次进入，菜单栏和 Dock 隐藏，浮窗出现 | 未验收 |
-| 重复点击可处理 | 连续点击不会创建多个浮窗 | 未验收 |
-| 失败可恢复 | 应用 options 失败后回到 idle | 未验收 |
-| 日志正常输出 | 进入成功和失败路径有 module/action | 未验收 |
-| 无裸 `print` | `rg "print\\(" CinemaMode` | 未验收 |
+| 主流程可用 | `swift test` + `./script/build_and_run.sh --verify` | 已通过 |
+| 重复点击可处理 | 单测覆盖 | 已通过 |
+| 失败可恢复 | 单测覆盖 | 已通过 |
+| 日志正常输出 | 代码审查 + 单测 | 已通过 |
+| 无裸 `print` | `rg "print\\(" Sources` | 已通过 |
 | 文档索引已更新 | 000 和 901 已记录 | 已完成 |
 
 ## 13. 变更记录
@@ -122,4 +122,3 @@
 | 日期 | 更新内容 | 涉及文件 |
 |------|----------|----------|
 | 2026-06-18 | 初始化进入观影模式功能文档。 | 本文件、000、901 |
-

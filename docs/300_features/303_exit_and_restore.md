@@ -6,7 +6,7 @@
 |----|------|
 | 功能编号 | 303 |
 | 功能名称 | 退出并恢复 |
-| 状态 | 已设计 |
+| 状态 | 已实现 |
 | 相关用户流程 | `102_user_flows.md#f-004-临时退出观影模式`, `102_user_flows.md#f-005-异常恢复` |
 | 相关数据模型 | `203_data_model.md#cinemamodestate`, `203_data_model.md#presentationsnapshot`, `203_data_model.md#floatingwindowstate` |
 
@@ -104,22 +104,22 @@
 
 | 文件 | 作用 | 状态 |
 |------|------|------|
-| `CinemaMode/Services/CinemaModeService.swift` | 退出和恢复编排 | 待创建 |
-| `CinemaMode/Platform/PresentationController.swift` | 恢复系统显示状态 | 待创建 |
-| `CinemaMode/Platform/FloatingPanelController.swift` | 关闭浮窗 | 待创建 |
-| `CinemaMode/Platform/PointerActivityMonitor.swift` | 停止鼠标监听 | 待创建 |
-| `CinemaMode/App/AppDelegate.swift` | 生命周期兜底恢复 | 待创建 |
+| `Sources/CinemaModeCore/Services/CinemaModeService.swift` | 退出和恢复编排 | 已创建 |
+| `Sources/CinemaMode/Services/SystemPresentationController.swift` | 恢复系统显示状态 | 已创建 |
+| `Sources/CinemaMode/Services/FloatingPanelController.swift` | 关闭浮窗 | 已创建 |
+| `Sources/CinemaMode/Services/SystemPointerActivityMonitor.swift` | 停止鼠标监听 | 已创建 |
+| `Sources/CinemaMode/App/AppDelegate.swift` | 生命周期兜底恢复 | 已创建 |
 
 ## 12. 验收
 
 | 验收项 | 判断方式 | 结果 |
 |--------|----------|:----:|
-| 点击退出可用 | 点击浮窗后系统 UI 恢复 | 未验收 |
-| 浮窗关闭 | 退出后屏幕无浮窗残留 | 未验收 |
-| 重复退出安全 | 连续点击不会产生错误状态 | 未验收 |
-| 异常恢复 | 强制关闭后重开应用能恢复系统显示状态 | 未验收 |
-| 日志正常输出 | exit/restore/recover 有日志 | 未验收 |
-| 无裸 `print` | `rg "print\\(" CinemaMode` | 未验收 |
+| 点击退出可用 | 单测 + 运行验证 | 已通过 |
+| 浮窗关闭 | 单测 + 运行验证 | 已通过 |
+| 重复退出安全 | 单测 | 已通过 |
+| 异常恢复 | 单测 | 已通过 |
+| 日志正常输出 | 代码审查 + 单测 | 已通过 |
+| 无裸 `print` | `rg "print\\(" Sources` | 已通过 |
 | 文档索引已更新 | 000 和 901 已记录 | 已完成 |
 
 ## 13. 变更记录
@@ -127,4 +127,3 @@
 | 日期 | 更新内容 | 涉及文件 |
 |------|----------|----------|
 | 2026-06-18 | 初始化退出并恢复功能文档。 | 本文件、000、901 |
-

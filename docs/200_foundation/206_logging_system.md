@@ -4,7 +4,7 @@
 
 | 项目 | 路径 |
 |------|------|
-| logger 模块 | `CinemaMode/Support/Logger.swift` |
+| logger 模块 | `Sources/CinemaMode/Services/SystemLogger.swift` |
 | 日志输出目录 | macOS unified logging |
 | 日志配置文件 | 暂无，MVP 使用代码内固定 subsystem/category |
 | subsystem | `com.cinemamode.app` |
@@ -97,12 +97,12 @@ print(error)
 
 | 检查项 | 状态 |
 |--------|:----:|
-| logger 模块已建立 | 未开始 |
-| 核心功能使用统一 logger | 未开始 |
-| 失败路径有 error 日志 | 未开始 |
-| 每条日志含 module + action | 未开始 |
-| 无 `print` 调试 | 未开始 |
-| 无敏感信息泄露 | 未开始 |
+| logger 模块已建立 | 已完成 |
+| 核心功能使用统一 logger | 已完成 |
+| 失败路径有 error 日志 | 已完成 |
+| 每条日志含 module + action | 已完成 |
+| 无 `print` 调试 | 已完成 |
+| 无敏感信息泄露 | 已完成 |
 
 ## 9. 变更记录
 

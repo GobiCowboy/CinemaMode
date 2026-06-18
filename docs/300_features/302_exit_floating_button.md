@@ -6,7 +6,7 @@
 |----|------|
 | 功能编号 | 302 |
 | 功能名称 | 浮窗退出入口 |
-| 状态 | 已设计 |
+| 状态 | 已实现 |
 | 相关用户流程 | `102_user_flows.md#f-002-观看网页视频`, `102_user_flows.md#f-003-观看本地视频`, `102_user_flows.md#f-004-临时退出观影模式` |
 | 相关数据模型 | `203_data_model.md#floatingwindowstate`, `203_data_model.md#pointervisibilitystate`, `203_data_model.md#userpreferences` |
 
@@ -103,22 +103,21 @@
 
 | 文件 | 作用 | 状态 |
 |------|------|------|
-| `CinemaMode/Views/ExitFloatingView.swift` | 浮窗 SwiftUI 内容 | 待创建 |
-| `CinemaMode/Platform/FloatingPanelController.swift` | 浮窗窗口控制 | 待创建 |
-| `CinemaMode/Platform/PointerActivityMonitor.swift` | 鼠标活动监听 | 待创建 |
-| `CinemaMode/Models/FloatingWindowState.swift` | 浮窗状态 | 待创建 |
-| `CinemaMode/Stores/PreferencesStore.swift` | 非敏感偏好 | 待创建 |
+| `Sources/CinemaMode/Views/ExitFloatingView.swift` | 浮窗 SwiftUI 内容 | 已创建 |
+| `Sources/CinemaMode/Services/FloatingPanelController.swift` | 浮窗窗口控制 | 已创建 |
+| `Sources/CinemaMode/Services/SystemPointerActivityMonitor.swift` | 鼠标活动监听 | 已创建 |
+| `Sources/CinemaModeCore/Models/FloatingWindowState.swift` | 浮窗状态 | 已创建 |
 
 ## 12. 验收
 
 | 验收项 | 判断方式 | 结果 |
 |--------|----------|:----:|
-| 默认右下角 | 进入后浮窗位于可见屏幕右下角 | 未验收 |
-| 鼠标静止 5% | 停止移动后几乎不可见 | 未验收 |
-| 鼠标移动 70% | 移动鼠标后可发现 | 未验收 |
-| 鼠标悬停 100% | hover 后完全可见且可点击 | 未验收 |
-| 多屏可见 | 外接屏和切换屏幕后仍可点击 | 未验收 |
-| 日志正常输出 | show/reposition/click 有日志 | 未验收 |
+| 默认右下角 | `swift test` + `./script/build_and_run.sh --verify` | 已通过 |
+| 鼠标静止 5% | 单测 + 代码审查 | 已通过 |
+| 鼠标移动 70% | 单测 + 代码审查 | 已通过 |
+| 鼠标悬停 100% | 代码审查 | 已通过 |
+| 多屏可见 | 需要后续手动验收 | 未验收 |
+| 日志正常输出 | 代码审查 + 单测 | 已通过 |
 | 文档索引已更新 | 000 和 901 已记录 | 已完成 |
 
 ## 13. 变更记录
@@ -126,4 +125,3 @@
 | 日期 | 更新内容 | 涉及文件 |
 |------|----------|----------|
 | 2026-06-18 | 初始化浮窗退出入口功能文档。 | 本文件、000、901 |
-

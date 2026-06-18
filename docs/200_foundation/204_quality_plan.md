@@ -36,7 +36,7 @@ log stream --predicate 'subsystem == "com.cinemamode.app"'
 | `PresentationController` | 保存快照、合法 options 组合、恢复调用 |
 | `FloatingPanelController` | show / close 幂等、屏幕变化后的定位策略 |
 | `PointerActivityMonitor` | 静止、移动、悬停状态到透明度的映射 |
-| `PreferencesStore` | 默认值、偏好读写、无敏感数据 |
+| `PreferencesStore` | 后续如引入则覆盖默认值、偏好读写、无敏感数据 |
 | `Logger` | module / action 必填，敏感字段过滤 |
 
 ## 4. 手动验收场景
@@ -57,14 +57,14 @@ log stream --predicate 'subsystem == "com.cinemamode.app"'
 
 | 检查项 | 方法 | 结果 |
 |--------|------|:----:|
-| 能否启动 | 打开 `.app` | 未执行 |
-| 测试通过 | `xcodebuild test` | 未执行 |
-| 构建通过 | `xcodebuild build` | 未执行 |
-| 日志正常输出 | Console.app 或 `log stream` | 未执行 |
-| 无 `print` 调试 | `rg "print\\(" CinemaMode` | 未执行 |
-| 无敏感信息泄露 | 检查日志 context | 未执行 |
-| 退出入口始终可见 | 手动验收 | 未执行 |
-| 异常恢复可用 | 手动验收 | 未执行 |
+| 能否启动 | `./script/build_and_run.sh --verify` | 通过 |
+| 测试通过 | `swift test` | 通过 |
+| 构建通过 | `swift test` / `swift build` | 通过 |
+| 日志正常输出 | 代码审查，已接入统一 logger | 通过 |
+| 无 `print` 调试 | `rg "print\\(" Sources Tests` | 通过 |
+| 无敏感信息泄露 | 代码审查 | 通过 |
+| 退出入口始终可见 | 需要后续手动验收 | 未验收 |
+| 异常恢复可用 | 单元测试 + 后续手动验收 | 部分通过 |
 
 ## 6. 缺陷记录
 

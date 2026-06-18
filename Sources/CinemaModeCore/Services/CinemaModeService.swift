@@ -1,0 +1,257 @@
+import Combine
+import Foundation
+
+@MainActor
+public final class CinemaModeService: ObservableObject {
+    @Published public private(set) var phase: CinemaModePhase = .idle
+    @Published public private(set) var lastError: AppError?
+    @Published public private(set) var enteredAt: Date?
+
+    private let presentationController: any PresentationControlling
+    private let floatingPanelController: any FloatingPanelControlling
+    private let pointerMonitor: any PointerActivityMonitoring
+    private let logger: any CinemaModeLogging
+
+    private var snapshot: PresentationSnapshot?
+
+    public init(
+        presentationController: any PresentationControlling,
+        floatingPanelController: any FloatingPanelControlling,
+        pointerMonitor: any PointerActivityMonitoring,
+        logger: any CinemaModeLogging = NullCinemaModeLogger()
+    ) {
+        self.presentationController = presentationController
+        self.floatingPanelController = floatingPanelController
+        self.pointerMonitor = pointerMonitor
+        self.logger = logger
+    }
+
+    public func enter(anchor: FloatingAnchor = .bottomRight) {
+        if phase == .failed {
+            recoverIfNeeded()
+        }
+
+        guard phase == .idle else {
+            logger.warn(
+                module: "cinemaMode",
+                action: "enter.ignored",
+                message: "Enter ignored because mode is not idle",
+                context: ["phase": phase.rawValue]
+            )
+            return
+        }
+
+        phase = .entering
+        lastError = nil
+
+        logger.info(
+            module: "cinemaMode",
+            action: "enter.start",
+            message: "Start entering cinema mode",
+            context: ["anchor": anchor.rawValue]
+        )
+
+        do {
+            let capturedSnapshot = try presentationController.captureSnapshot()
+            snapshot = capturedSnapshot
+
+            try presentationController.applyCinemaMode(using: capturedSnapshot)
+
+            let windowState = FloatingWindowState(
+                anchor: anchor,
+                opacity: 0.05,
+                isHovered: false,
+                isVisible: true
+            )
+
+            try floatingPanelController.show(state: windowState) { [weak self] in
+                Task { @MainActor in
+                    self?.exit()
+                }
+            }
+
+            try pointerMonitor.start { [weak self] visibility in
+                Task { @MainActor in
+                    self?.handlePointerVisibilityChange(visibility)
+                }
+            }
+
+            enteredAt = Date()
+            phase = .active
+
+            logger.info(
+                module: "cinemaMode",
+                action: "enter.success",
+                message: "Cinema mode entered",
+                context: ["anchor": anchor.rawValue]
+            )
+        } catch {
+            handleEnterFailure(error)
+        }
+    }
+
+    public func exit() {
+        guard phase == .active || phase == .entering || phase == .failed else {
+            logger.warn(
+                module: "cinemaMode",
+                action: "exit.ignored",
+                message: "Exit ignored because mode is not active",
+                context: ["phase": phase.rawValue]
+            )
+            return
+        }
+
+        phase = .exiting
+        logger.info(
+            module: "cinemaMode",
+            action: "exit.start",
+            message: "Start exiting cinema mode",
+            context: ["phase": phase.rawValue]
+        )
+
+        pointerMonitor.stop()
+        floatingPanelController.hide()
+
+        guard let currentSnapshot = snapshot else {
+            phase = .idle
+            enteredAt = nil
+            lastError = nil
+            logger.info(
+                module: "cinemaMode",
+                action: "exit.success",
+                message: "Cinema mode exited",
+                context: ["restored": "false"]
+            )
+            return
+        }
+
+        do {
+            try presentationController.restore(from: currentSnapshot)
+            snapshot = nil
+            enteredAt = nil
+            lastError = nil
+            phase = .idle
+
+            logger.info(
+                module: "presentation",
+                action: "options.restore",
+                message: "Presentation options restored",
+                context: ["restoreAttemptCount": "\(currentSnapshot.restoreAttemptCount)"]
+            )
+            logger.info(
+                module: "cinemaMode",
+                action: "exit.success",
+                message: "Cinema mode exited",
+                context: ["restored": "true"]
+            )
+        } catch {
+            phase = .failed
+            lastError = .presentationRestoreFailed(error.localizedDescription)
+            logger.error(
+                module: "presentation",
+                action: "options.restore.failed",
+                message: "Failed to restore presentation options",
+                error: error,
+                context: ["restoreAttemptCount": "\(currentSnapshot.restoreAttemptCount)"]
+            )
+        }
+    }
+
+    public func recoverIfNeeded() {
+        guard phase != .idle || snapshot != nil || floatingPanelController.isVisible else {
+            return
+        }
+
+        phase = .recovering
+        logger.warn(
+            module: "cinemaMode",
+            action: "recover",
+            message: "Recovering inconsistent cinema mode state",
+            context: ["phase": phase.rawValue]
+        )
+
+        pointerMonitor.stop()
+        floatingPanelController.hide()
+
+        if let currentSnapshot = snapshot {
+            do {
+                try presentationController.restore(from: currentSnapshot)
+                snapshot = nil
+            } catch {
+                phase = .failed
+                lastError = .presentationRestoreFailed(error.localizedDescription)
+                logger.error(
+                    module: "presentation",
+                    action: "options.restore.failed",
+                    message: "Failed to restore presentation options during recovery",
+                    error: error,
+                    context: ["restoreAttemptCount": "\(currentSnapshot.restoreAttemptCount)"]
+                )
+                return
+            }
+        }
+
+        enteredAt = nil
+        lastError = nil
+        phase = .idle
+    }
+
+    private func handlePointerVisibilityChange(_ visibility: PointerVisibilityState) {
+        guard phase == .active else {
+            return
+        }
+
+        floatingPanelController.update(pointerVisibility: visibility)
+        logger.debug(
+            module: "pointer",
+            action: "visibility.change",
+            message: "Pointer visibility changed",
+            context: [
+                "activity": visibility.activity.rawValue,
+                "targetOpacity": String(format: "%.2f", visibility.targetOpacity)
+            ]
+        )
+    }
+
+    private func handleEnterFailure(_ error: Error) {
+        pointerMonitor.stop()
+        floatingPanelController.hide()
+
+        if let currentSnapshot = snapshot {
+            do {
+                try presentationController.restore(from: currentSnapshot)
+                logger.warn(
+                    module: "presentation",
+                    action: "options.restore",
+                    message: "Presentation options restored after enter failure",
+                    context: ["restoreAttemptCount": "\(currentSnapshot.restoreAttemptCount)"]
+                )
+            } catch {
+                logger.error(
+                    module: "presentation",
+                    action: "options.restore.failed",
+                    message: "Failed to restore presentation options after enter failure",
+                    error: error,
+                    context: ["restoreAttemptCount": "\(currentSnapshot.restoreAttemptCount)"]
+                )
+            }
+        }
+
+        phase = .failed
+        enteredAt = nil
+
+        if let appError = error as? AppError {
+            lastError = appError
+        } else {
+            lastError = .invalidState(error.localizedDescription)
+        }
+
+        logger.error(
+            module: "cinemaMode",
+            action: "enter.failed",
+            message: "Failed to enter cinema mode",
+            error: error,
+            context: ["phase": phase.rawValue]
+        )
+    }
+}
