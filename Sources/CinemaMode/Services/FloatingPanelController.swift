@@ -25,12 +25,24 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
         model.state = currentState
 
         if panel == nil {
-            let contentView = ExitFloatingView(model: model) { [weak self] in
-                Task { @MainActor in
-                    self?.onExit?()
+            let contentView = ExitFloatingView(
+                model: model,
+                onExit: { [weak self] in
+                    Task { @MainActor in
+                        self?.onExit?()
+                    }
+                },
+                onDrag: { [weak self] delta in
+                    Task { @MainActor in
+                        self?.move(by: delta)
+                    }
                 }
-            }
+            )
             let hostingController = NSHostingController(rootView: contentView)
+            hostingController.view.wantsLayer = true
+            hostingController.view.layer?.cornerRadius = 36
+            hostingController.view.layer?.masksToBounds = true
+            hostingController.view.layer?.backgroundColor = NSColor.clear.cgColor
             let panel = FloatingPanel(
                 contentRect: CGRect(x: 0, y: 0, width: 72, height: 72),
                 styleMask: [.borderless, .nonactivatingPanel],
@@ -44,7 +56,7 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
             panel.hidesOnDeactivate = false
             panel.backgroundColor = .clear
             panel.isOpaque = false
-            panel.hasShadow = true
+            panel.hasShadow = false
             panel.animationBehavior = .utilityWindow
             panel.isMovable = false
             self.panel = panel
@@ -92,6 +104,26 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
             message: "Exit floating panel closed",
             context: nil
         )
+    }
+
+    func move(by delta: CGSize) {
+        guard let panel else {
+            return
+        }
+
+        let currentFrame = panel.frame
+        let visibleFrame = panel.screen?.visibleFrame ?? NSScreen.main?.visibleFrame ?? NSScreen.screens.first?.visibleFrame ?? .zero
+        let minX = visibleFrame.minX
+        let maxX = visibleFrame.maxX - currentFrame.width
+        let minY = visibleFrame.minY
+        let maxY = visibleFrame.maxY - currentFrame.height
+
+        let origin = CGPoint(
+            x: min(max(currentFrame.origin.x + delta.width, minX), maxX),
+            y: min(max(currentFrame.origin.y + delta.height, minY), maxY)
+        )
+
+        panel.setFrameOrigin(origin)
     }
 
     private func positionPanel() {
