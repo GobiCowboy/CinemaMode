@@ -1,25 +1,11 @@
-import AppKit
 import SwiftUI
 
 struct MenuBarIconView: View {
     var body: some View {
-        icon
-            .resizable()
-            .scaledToFit()
-            .frame(width: 16, height: 16)
-    }
-
-    private var icon: Image {
-        if let image = appIconImage {
-            return Image(nsImage: image).renderingMode(.original)
-        }
-        return Image(systemName: "movieclapper")
-    }
-
-    private var appIconImage: NSImage? {
-        guard let url = Bundle.main.url(forResource: "AppIcon", withExtension: "icns") else {
-            return nil
-        }
-        return NSImage(contentsOf: url)
+        Image(systemName: "movieclapper.fill")
+            .font(.system(size: 13, weight: .semibold))
+            .symbolRenderingMode(.monochrome)
+            .foregroundStyle(.primary)
+            .frame(width: 14, height: 14)
     }
 }

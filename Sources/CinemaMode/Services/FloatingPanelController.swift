@@ -31,7 +31,13 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
                 }
             }
             let hostingController = NSHostingController(rootView: contentView)
-            let panel = FloatingPanel(contentViewController: hostingController)
+            let panel = FloatingPanel(
+                contentRect: CGRect(x: 0, y: 0, width: 72, height: 72),
+                styleMask: [.borderless, .nonactivatingPanel],
+                backing: .buffered,
+                defer: false
+            )
+            panel.contentViewController = hostingController
             panel.level = .floating
             panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .transient, .ignoresCycle]
             panel.isReleasedWhenClosed = false
@@ -40,8 +46,7 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
             panel.isOpaque = false
             panel.hasShadow = true
             panel.animationBehavior = .utilityWindow
-            panel.titleVisibility = .hidden
-            panel.titlebarAppearsTransparent = true
+            panel.isMovable = false
             self.panel = panel
         }
 
