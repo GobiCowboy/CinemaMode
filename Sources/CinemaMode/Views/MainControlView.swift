@@ -3,13 +3,15 @@ import CinemaModeCore
 
 struct MainControlView: View {
     @ObservedObject var service: CinemaModeService
+    @ObservedObject var preferences: PreferencesStore
 
     var body: some View {
+        let copy = CinemaModeCopy(language: preferences.preferredLanguage)
         VStack(spacing: 20) {
             Button {
                 service.enter()
             } label: {
-                Label("Enter Cinema Mode", systemImage: "movieclapper")
+                Label(copy.enterMenuTitle, systemImage: "movieclapper")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
             }
@@ -37,19 +39,20 @@ struct MainControlView: View {
     }
 
     private var statusText: String {
+        let copy = CinemaModeCopy(language: preferences.preferredLanguage)
         switch service.phase {
         case .idle:
-            return "Ready"
+            return copy.readyStatus
         case .entering:
-            return "Entering"
+            return copy.enteringStatus
         case .active:
-            return "Cinema mode active"
+            return copy.activeStatus
         case .exiting:
-            return "Exiting"
+            return copy.exitingStatus
         case .recovering:
-            return "Recovering"
+            return copy.recoveringStatus
         case .failed:
-            return "Needs recovery"
+            return copy.failedStatus
         }
     }
 
@@ -66,4 +69,3 @@ struct MainControlView: View {
         }
     }
 }
-

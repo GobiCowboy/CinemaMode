@@ -20,3 +20,10 @@ public protocol PointerActivityMonitoring: AnyObject {
     func start(onChange: @escaping @Sendable (PointerVisibilityState) -> Void) throws
     func stop()
 }
+
+@MainActor
+public protocol EnvironmentPreferencesControlling: Sendable {
+    func captureSnapshot() throws -> EnvironmentPreferencesSnapshot
+    func applyPreferences(from preferences: PreferencesStore) throws
+    func restore(from snapshot: EnvironmentPreferencesSnapshot, preferences: PreferencesStore) throws
+}

@@ -7,17 +7,22 @@ final class MenuBarStatusItemController: NSObject, NSMenuDelegate {
     private let service: CinemaModeService
     private let logger: SystemLogger
     private let settingsWindowController: SettingsWindowController
+    private let preferencesStore: PreferencesStore
     private var statusItem: NSStatusItem?
     private var statusMenu: NSMenu?
     private var phaseObservation: AnyCancellable?
+    private var languageObservation: AnyCancellable?
     private weak var statusLabelItem: NSMenuItem?
     private weak var enterItem: NSMenuItem?
     private weak var exitItem: NSMenuItem?
+    private weak var settingsItem: NSMenuItem?
+    private weak var quitItem: NSMenuItem?
 
-    init(service: CinemaModeService, logger: SystemLogger, settingsWindowController: SettingsWindowController) {
+    init(service: CinemaModeService, logger: SystemLogger, settingsWindowController: SettingsWindowController, preferencesStore: PreferencesStore) {
         self.service = service
         self.logger = logger
         self.settingsWindowController = settingsWindowController
+        self.preferencesStore = preferencesStore
         super.init()
     }
 
@@ -59,20 +64,20 @@ final class MenuBarStatusItemController: NSObject, NSMenuDelegate {
         menu.addItem(statusItemLabel)
         menu.addItem(.separator())
 
-        let settingsItem = NSMenuItem(title: "Settings...", action: #selector(handleSettings), keyEquivalent: ",")
+        let settingsItem = NSMenuItem(title: "", action: #selector(handleSettings), keyEquivalent: ",")
         settingsItem.target = self
         menu.addItem(settingsItem)
 
-        let enterItem = NSMenuItem(title: "Enter Cinema Mode", action: #selector(handleEnterCinemaMode), keyEquivalent: "")
+        let enterItem = NSMenuItem(title: "", action: #selector(handleEnterCinemaMode), keyEquivalent: "")
         enterItem.target = self
         menu.addItem(enterItem)
 
-        let exitItem = NSMenuItem(title: "Exit Cinema Mode", action: #selector(handleExitCinemaMode), keyEquivalent: "")
+        let exitItem = NSMenuItem(title: "", action: #selector(handleExitCinemaMode), keyEquivalent: "")
         exitItem.target = self
         menu.addItem(exitItem)
         menu.addItem(.separator())
 
-        let quitItem = NSMenuItem(title: "Quit Cinema Mode", action: #selector(handleQuit), keyEquivalent: "")
+        let quitItem = NSMenuItem(title: "", action: #selector(handleQuit), keyEquivalent: "")
         quitItem.target = self
         menu.addItem(quitItem)
 
@@ -81,13 +86,21 @@ final class MenuBarStatusItemController: NSObject, NSMenuDelegate {
         self.statusItem = statusItem
         self.statusMenu = menu
         self.statusLabelItem = statusItemLabel
+        self.settingsItem = settingsItem
         self.enterItem = enterItem
         self.exitItem = exitItem
+        self.quitItem = quitItem
         phaseObservation = service.$phase.sink { [weak self] phase in
             Task { @MainActor in
                 self?.refreshMenuState(for: phase)
             }
         }
+        languageObservation = preferencesStore.$preferredLanguageRawValue.sink { [weak self] _ in
+            Task { @MainActor in
+                self?.refreshMenuStrings()
+            }
+        }
+        refreshMenuStrings()
         refreshMenuState(for: service.phase)
 
         logger.info(
@@ -100,10 +113,13 @@ final class MenuBarStatusItemController: NSObject, NSMenuDelegate {
 
     private func removeStatusItem() {
         phaseObservation = nil
+        languageObservation = nil
         statusMenu = nil
         statusLabelItem = nil
+        settingsItem = nil
         enterItem = nil
         exitItem = nil
+        quitItem = nil
 
         if let statusItem {
             NSStatusBar.system.removeStatusItem(statusItem)
@@ -169,25 +185,38 @@ final class MenuBarStatusItemController: NSObject, NSMenuDelegate {
     }
 
     private func refreshMenuState(for phase: CinemaModePhase) {
-        statusLabelItem?.title = statusText(for: phase)
+        let copy = CinemaModeCopy(language: preferencesStore.preferredLanguage)
+        statusLabelItem?.title = statusText(for: phase, copy: copy)
         enterItem?.isEnabled = phase == .idle
         exitItem?.isEnabled = phase == .active || phase == .entering || phase == .failed
     }
 
-    private func statusText(for phase: CinemaModePhase) -> String {
+    private func refreshMenuStrings() {
+        let copy = CinemaModeCopy(language: preferencesStore.preferredLanguage)
+        statusItem?.button?.toolTip = copy.appTitle
+        statusItem?.button?.image?.accessibilityDescription = copy.appTitle
+        statusItem?.menu?.item(at: 0)?.title = copy.appTitle
+        settingsItem?.title = copy.settingsMenuTitle
+        enterItem?.title = copy.enterMenuTitle
+        exitItem?.title = copy.exitMenuTitle
+        quitItem?.title = copy.quitMenuTitle
+        refreshMenuState(for: service.phase)
+    }
+
+    private func statusText(for phase: CinemaModePhase, copy: CinemaModeCopy) -> String {
         switch phase {
         case .idle:
-            return "Ready"
+            return copy.readyStatus
         case .entering:
-            return "Entering"
+            return copy.enteringStatus
         case .active:
-            return "Cinema mode active"
+            return copy.activeStatus
         case .exiting:
-            return "Exiting"
+            return copy.exitingStatus
         case .recovering:
-            return "Recovering"
+            return copy.recoveringStatus
         case .failed:
-            return "Needs recovery"
+            return copy.failedStatus
         }
     }
 }

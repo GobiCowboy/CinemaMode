@@ -7,6 +7,9 @@ public enum AppError: Error, Equatable, LocalizedError, Sendable {
     case presentationRestoreFailed(String)
     case floatingPanelFailed(String)
     case pointerMonitorFailed(String)
+    case preferencesCaptureFailed(String)
+    case preferencesApplyFailed(String)
+    case preferencesRestoreFailed(String)
 
     public var errorDescription: String? {
         switch self {
@@ -15,9 +18,11 @@ public enum AppError: Error, Equatable, LocalizedError, Sendable {
              .presentationApplyFailed(let message),
              .presentationRestoreFailed(let message),
              .floatingPanelFailed(let message),
-             .pointerMonitorFailed(let message):
+             .pointerMonitorFailed(let message),
+             .preferencesCaptureFailed(let message),
+             .preferencesApplyFailed(let message),
+             .preferencesRestoreFailed(let message):
             return message
         }
     }
 }
-

@@ -5,13 +5,17 @@ import XCTest
 final class CinemaModeServiceTests: XCTestCase {
     func testEnterHappyPathTransitionsToActive() {
         let presentation = PresentationControllerSpy()
+        let environment = EnvironmentPreferencesControllerSpy()
         let panel = FloatingPanelControllerSpy()
         let monitor = PointerMonitorSpy()
+        let preferences = PreferencesStore(defaults: UserDefaults(suiteName: #function)!)
         let logger = LoggerSpy()
         let service = CinemaModeService(
             presentationController: presentation,
+            environmentPreferencesController: environment,
             floatingPanelController: panel,
             pointerMonitor: monitor,
+            preferencesStore: preferences,
             logger: logger
         )
 
@@ -19,6 +23,8 @@ final class CinemaModeServiceTests: XCTestCase {
 
         XCTAssertEqual(service.phase, .active)
         XCTAssertEqual(presentation.captureCount, 1)
+        XCTAssertEqual(environment.captureCount, 1)
+        XCTAssertEqual(environment.applyCount, 1)
         XCTAssertEqual(presentation.applyCount, 1)
         XCTAssertEqual(panel.showCount, 1)
         XCTAssertEqual(monitor.startCount, 1)
@@ -27,13 +33,17 @@ final class CinemaModeServiceTests: XCTestCase {
 
     func testEnterWhileActiveIsIgnored() {
         let presentation = PresentationControllerSpy()
+        let environment = EnvironmentPreferencesControllerSpy()
         let panel = FloatingPanelControllerSpy()
         let monitor = PointerMonitorSpy()
+        let preferences = PreferencesStore(defaults: UserDefaults(suiteName: #function)!)
         let logger = LoggerSpy()
         let service = CinemaModeService(
             presentationController: presentation,
+            environmentPreferencesController: environment,
             floatingPanelController: panel,
             pointerMonitor: monitor,
+            preferencesStore: preferences,
             logger: logger
         )
 
@@ -48,13 +58,17 @@ final class CinemaModeServiceTests: XCTestCase {
 
     func testExitRestoresAndStopsMonitoring() {
         let presentation = PresentationControllerSpy()
+        let environment = EnvironmentPreferencesControllerSpy()
         let panel = FloatingPanelControllerSpy()
         let monitor = PointerMonitorSpy()
+        let preferences = PreferencesStore(defaults: UserDefaults(suiteName: #function)!)
         let logger = LoggerSpy()
         let service = CinemaModeService(
             presentationController: presentation,
+            environmentPreferencesController: environment,
             floatingPanelController: panel,
             pointerMonitor: monitor,
+            preferencesStore: preferences,
             logger: logger
         )
 
@@ -63,6 +77,7 @@ final class CinemaModeServiceTests: XCTestCase {
 
         XCTAssertEqual(service.phase, .idle)
         XCTAssertEqual(presentation.restoreCount, 1)
+        XCTAssertEqual(environment.restoreCount, 1)
         XCTAssertEqual(panel.hideCount, 1)
         XCTAssertEqual(monitor.stopCount, 1)
         XCTAssertNil(service.lastError)
@@ -70,14 +85,18 @@ final class CinemaModeServiceTests: XCTestCase {
 
     func testEnterFailureRestoresPartialStateAndMarksFailed() {
         let presentation = PresentationControllerSpy()
+        let environment = EnvironmentPreferencesControllerSpy()
         let panel = FloatingPanelControllerSpy()
         panel.showError = AppError.floatingPanelFailed("panel failed")
         let monitor = PointerMonitorSpy()
+        let preferences = PreferencesStore(defaults: UserDefaults(suiteName: #function)!)
         let logger = LoggerSpy()
         let service = CinemaModeService(
             presentationController: presentation,
+            environmentPreferencesController: environment,
             floatingPanelController: panel,
             pointerMonitor: monitor,
+            preferencesStore: preferences,
             logger: logger
         )
 
@@ -85,10 +104,33 @@ final class CinemaModeServiceTests: XCTestCase {
 
         XCTAssertEqual(service.phase, .failed)
         XCTAssertEqual(presentation.restoreCount, 1)
+        XCTAssertEqual(environment.restoreCount, 1)
         XCTAssertEqual(panel.hideCount, 1)
         XCTAssertEqual(monitor.startCount, 0)
         XCTAssertEqual(service.lastError, .floatingPanelFailed("panel failed"))
         XCTAssertTrue(logger.errorActions.contains("cinemaMode:enter.failed"))
+    }
+}
+
+@MainActor
+final class EnvironmentPreferencesControllerSpy: EnvironmentPreferencesControlling {
+    var captureCount = 0
+    var applyCount = 0
+    var restoreCount = 0
+    var snapshot = EnvironmentPreferencesSnapshot(outputVolume: 0.5, displayBrightness: 0.7)
+
+    func captureSnapshot() throws -> EnvironmentPreferencesSnapshot {
+        captureCount += 1
+        return snapshot
+    }
+
+    func applyPreferences(from preferences: PreferencesStore) throws {
+        applyCount += 1
+    }
+
+    func restore(from snapshot: EnvironmentPreferencesSnapshot, preferences: PreferencesStore) throws {
+        restoreCount += 1
+        self.snapshot = snapshot
     }
 }
 

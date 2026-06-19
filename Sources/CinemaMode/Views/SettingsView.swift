@@ -5,22 +5,23 @@ struct SettingsView: View {
     @ObservedObject var preferences: PreferencesStore
 
     var body: some View {
+        let copy = CinemaModeCopy(language: preferences.preferredLanguage)
         Form {
             Section {
-                Toggle("Enable Do Not Disturb", isOn: $preferences.isDoNotDisturbEnabled)
-                Toggle("Restore volume on exit", isOn: $preferences.restoreVolumeOnExit)
-                Toggle("Restore brightness on exit", isOn: $preferences.restoreBrightnessOnExit)
-                Toggle("Allow Esc to exit", isOn: $preferences.exitWithEscapeKey)
+                Toggle(copy.doNotDisturbToggle, isOn: $preferences.isDoNotDisturbEnabled)
+                Toggle(copy.restoreVolumeToggle, isOn: $preferences.restoreVolumeOnExit)
+                Toggle(copy.restoreBrightnessToggle, isOn: $preferences.restoreBrightnessOnExit)
+                Toggle(copy.allowEscToggle, isOn: $preferences.exitWithEscapeKey)
             } header: {
-                Text("Behavior")
+                Text(copy.behaviorSection)
             } footer: {
-                Text("These choices apply when Cinema Mode starts and ends.")
+                Text(copy.behaviorFootnote)
             }
 
             Section {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Label("Volume", systemImage: "speaker.wave.2.fill")
+                        Label(copy.volumeLabel, systemImage: "speaker.wave.2.fill")
                         Spacer()
                         Text("\(Int(preferences.preferredVolume))%")
                             .foregroundStyle(.secondary)
@@ -30,7 +31,7 @@ struct SettingsView: View {
 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Label("Brightness", systemImage: "sun.max.fill")
+                        Label(copy.brightnessLabel, systemImage: "sun.max.fill")
                         Spacer()
                         Text("\(Int(preferences.preferredBrightness))%")
                             .foregroundStyle(.secondary)
@@ -38,20 +39,33 @@ struct SettingsView: View {
                     Slider(value: $preferences.preferredBrightness, in: 0...100, step: 1)
                 }
             } header: {
-                Text("Levels")
+                Text(copy.levelsSection)
             } footer: {
-                Text("Brightness currently targets the built-in display only.")
+                Text(copy.levelsFootnote)
             }
 
             Section {
-                LabeledContent("Exit corner") {
-                    Text("Bottom-right")
+                LabeledContent(copy.exitCornerLabel) {
+                    Text(copy.bottomRightCorner)
                         .foregroundStyle(.secondary)
                 }
             } header: {
-                Text("Placement")
+                Text(copy.placementSection)
             } footer: {
-                Text("The app currently keeps the control anchored in the bottom-right corner.")
+                Text(copy.placementFootnote)
+            }
+
+            Section {
+                Picker("", selection: $preferences.preferredLanguageRawValue) {
+                    Text(copy.languageSystem).tag(AppLanguage.system.rawValue)
+                    Text(copy.languageChinese).tag(AppLanguage.chinese.rawValue)
+                    Text(copy.languageEnglish).tag(AppLanguage.english.rawValue)
+                }
+                .pickerStyle(.segmented)
+            } header: {
+                Text(copy.languageSection)
+            } footer: {
+                Text(copy.languageFootnote)
             }
         }
         .formStyle(.grouped)

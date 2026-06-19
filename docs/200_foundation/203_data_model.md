@@ -117,6 +117,7 @@
 | `isDoNotDisturbEnabled` | Bool | 是 | true | 无 | 是否在观影模式启用勿扰 |
 | `preferredVolume` | Double | 是 | 65 | 0...100 | 进入观影模式时的目标音量 |
 | `preferredBrightness` | Double | 是 | 75 | 0...100 | 进入观影模式时的目标内屏亮度 |
+| `preferredLanguage` | enum | 是 | `system` | `system / chinese / english` | 设置页和菜单栏文案语言 |
 | `restoreVolumeOnExit` | Bool | 是 | true | 无 | 退出时是否恢复原音量 |
 | `restoreBrightnessOnExit` | Bool | 是 | true | 无 | 退出时是否恢复原亮度 |
 | `exitWithEscapeKey` | Bool | 是 | true | 无 | 是否允许 Esc 退出 |

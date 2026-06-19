@@ -8,21 +8,28 @@ public final class CinemaModeService: ObservableObject {
     @Published public private(set) var enteredAt: Date?
 
     private let presentationController: any PresentationControlling
+    private let environmentPreferencesController: any EnvironmentPreferencesControlling
     private let floatingPanelController: any FloatingPanelControlling
     private let pointerMonitor: any PointerActivityMonitoring
+    private let preferencesStore: PreferencesStore
     private let logger: any CinemaModeLogging
 
     private var snapshot: PresentationSnapshot?
+    private var environmentSnapshot: EnvironmentPreferencesSnapshot?
 
     public init(
         presentationController: any PresentationControlling,
+        environmentPreferencesController: any EnvironmentPreferencesControlling,
         floatingPanelController: any FloatingPanelControlling,
         pointerMonitor: any PointerActivityMonitoring,
+        preferencesStore: PreferencesStore,
         logger: any CinemaModeLogging = NullCinemaModeLogger()
     ) {
         self.presentationController = presentationController
+        self.environmentPreferencesController = environmentPreferencesController
         self.floatingPanelController = floatingPanelController
         self.pointerMonitor = pointerMonitor
+        self.preferencesStore = preferencesStore
         self.logger = logger
     }
 
@@ -30,6 +37,8 @@ public final class CinemaModeService: ObservableObject {
         if phase == .failed {
             recoverIfNeeded()
         }
+
+        let effectiveAnchor = preferencesStore.preferredAnchor
 
         guard phase == .idle else {
             logger.warn(
@@ -48,17 +57,20 @@ public final class CinemaModeService: ObservableObject {
             module: "cinemaMode",
             action: "enter.start",
             message: "Start entering cinema mode",
-            context: ["anchor": anchor.rawValue]
+            context: ["anchor": effectiveAnchor.rawValue]
         )
 
         do {
             let capturedSnapshot = try presentationController.captureSnapshot()
+            let capturedEnvironmentSnapshot = try environmentPreferencesController.captureSnapshot()
             snapshot = capturedSnapshot
+            environmentSnapshot = capturedEnvironmentSnapshot
 
             try presentationController.applyCinemaMode(using: capturedSnapshot)
+            try environmentPreferencesController.applyPreferences(from: preferencesStore)
 
             let windowState = FloatingWindowState(
-                anchor: anchor,
+                anchor: effectiveAnchor,
                 opacity: 0.05,
                 isHovered: false,
                 isVisible: true
@@ -83,7 +95,11 @@ public final class CinemaModeService: ObservableObject {
                 module: "cinemaMode",
                 action: "enter.success",
                 message: "Cinema mode entered",
-                context: ["anchor": anchor.rawValue]
+                context: [
+                    "anchor": preferencesStore.preferredAnchor.rawValue,
+                    "preferredBrightness": "\(Int(preferencesStore.preferredBrightness))",
+                    "preferredVolume": "\(Int(preferencesStore.preferredVolume))"
+                ]
             )
         } catch {
             handleEnterFailure(error)
@@ -115,6 +131,7 @@ public final class CinemaModeService: ObservableObject {
         guard let currentSnapshot = snapshot else {
             phase = .idle
             enteredAt = nil
+            environmentSnapshot = nil
             lastError = nil
             logger.info(
                 module: "cinemaMode",
@@ -127,7 +144,11 @@ public final class CinemaModeService: ObservableObject {
 
         do {
             try presentationController.restore(from: currentSnapshot)
+            if let environmentSnapshot {
+                try environmentPreferencesController.restore(from: environmentSnapshot, preferences: preferencesStore)
+            }
             snapshot = nil
+            environmentSnapshot = nil
             enteredAt = nil
             lastError = nil
             phase = .idle
@@ -158,7 +179,7 @@ public final class CinemaModeService: ObservableObject {
     }
 
     public func recoverIfNeeded() {
-        guard phase != .idle || snapshot != nil || floatingPanelController.isVisible else {
+        guard phase != .idle || snapshot != nil || environmentSnapshot != nil || floatingPanelController.isVisible else {
             return
         }
 
@@ -176,7 +197,11 @@ public final class CinemaModeService: ObservableObject {
         if let currentSnapshot = snapshot {
             do {
                 try presentationController.restore(from: currentSnapshot)
+                if let environmentSnapshot {
+                    try environmentPreferencesController.restore(from: environmentSnapshot, preferences: preferencesStore)
+                }
                 snapshot = nil
+                self.environmentSnapshot = nil
             } catch {
                 phase = .failed
                 lastError = .presentationRestoreFailed(error.localizedDescription)
@@ -220,6 +245,9 @@ public final class CinemaModeService: ObservableObject {
         if let currentSnapshot = snapshot {
             do {
                 try presentationController.restore(from: currentSnapshot)
+                if let environmentSnapshot {
+                    try environmentPreferencesController.restore(from: environmentSnapshot, preferences: preferencesStore)
+                }
                 logger.warn(
                     module: "presentation",
                     action: "options.restore",
@@ -239,6 +267,7 @@ public final class CinemaModeService: ObservableObject {
 
         phase = .failed
         enteredAt = nil
+        environmentSnapshot = nil
 
         if let appError = error as? AppError {
             lastError = appError

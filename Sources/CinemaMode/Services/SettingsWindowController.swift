@@ -12,7 +12,9 @@ final class SettingsWindowController {
     }
 
     func show() {
+        let copy = CinemaModeCopy(language: preferences.preferredLanguage)
         if let window {
+            window.title = copy.settingsTitle
             window.makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
             return
@@ -23,7 +25,7 @@ final class SettingsWindowController {
         let window = NSWindow(
             contentViewController: hostingController
         )
-        window.title = "Cinema Mode Settings"
+        window.title = copy.settingsTitle
         window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
         window.setContentSize(NSSize(width: 520, height: 460))
         window.center()

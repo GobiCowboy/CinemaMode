@@ -17,6 +17,7 @@ final class PreferencesStoreTests: XCTestCase {
         store.restoreVolumeOnExit = false
         store.restoreBrightnessOnExit = false
         store.exitWithEscapeKey = false
+        store.preferredLanguageRawValue = AppLanguage.chinese.rawValue
 
         let reloaded = PreferencesStore(defaults: defaults)
 
@@ -26,5 +27,6 @@ final class PreferencesStoreTests: XCTestCase {
         XCTAssertFalse(reloaded.restoreVolumeOnExit)
         XCTAssertFalse(reloaded.restoreBrightnessOnExit)
         XCTAssertFalse(reloaded.exitWithEscapeKey)
+        XCTAssertEqual(reloaded.preferredLanguage, .chinese)
     }
 }

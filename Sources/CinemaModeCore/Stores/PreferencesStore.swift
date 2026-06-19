@@ -27,6 +27,10 @@ public final class PreferencesStore: ObservableObject {
         didSet { defaults.set(exitWithEscapeKey, forKey: Keys.exitWithEscapeKey) }
     }
 
+    @Published public var preferredLanguageRawValue: String {
+        didSet { defaults.set(preferredLanguageRawValue, forKey: Keys.preferredLanguage) }
+    }
+
     @Published public var preferredAnchorRawValue: String {
         didSet { defaults.set(preferredAnchorRawValue, forKey: Keys.preferredAnchor) }
     }
@@ -43,6 +47,7 @@ public final class PreferencesStore: ObservableObject {
             Keys.restoreVolumeOnExit: true,
             Keys.restoreBrightnessOnExit: true,
             Keys.exitWithEscapeKey: true,
+            Keys.preferredLanguage: AppLanguage.system.rawValue,
             Keys.preferredAnchor: FloatingAnchor.bottomRight.rawValue
         ])
 
@@ -52,7 +57,12 @@ public final class PreferencesStore: ObservableObject {
         restoreVolumeOnExit = defaults.bool(forKey: Keys.restoreVolumeOnExit)
         restoreBrightnessOnExit = defaults.bool(forKey: Keys.restoreBrightnessOnExit)
         exitWithEscapeKey = defaults.bool(forKey: Keys.exitWithEscapeKey)
+        preferredLanguageRawValue = defaults.string(forKey: Keys.preferredLanguage) ?? AppLanguage.system.rawValue
         preferredAnchorRawValue = defaults.string(forKey: Keys.preferredAnchor) ?? FloatingAnchor.bottomRight.rawValue
+    }
+
+    public var preferredLanguage: AppLanguage {
+        AppLanguage.from(rawValue: preferredLanguageRawValue)
     }
 
     public var preferredAnchor: FloatingAnchor {
@@ -74,6 +84,7 @@ public final class PreferencesStore: ObservableObject {
         static let restoreVolumeOnExit = "preferences.restoreVolumeOnExit"
         static let restoreBrightnessOnExit = "preferences.restoreBrightnessOnExit"
         static let exitWithEscapeKey = "preferences.exitWithEscapeKey"
+        static let preferredLanguage = "preferences.preferredLanguage"
         static let preferredAnchor = "preferences.preferredAnchor"
     }
 }
