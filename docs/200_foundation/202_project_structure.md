@@ -22,11 +22,9 @@ project-root/
     CinemaMode/
       App/
         CinemaModeApp.swift
-        AppDelegate.swift
         AppEnvironment.swift
         MenuBarStatusItemController.swift
       Views/
-        MenuBarMenuView.swift
         MenuBarIconView.swift
         ExitFloatingView.swift
       Services/
@@ -74,8 +72,8 @@ project-root/
 
 | 文件类型 | 放哪里 | 命名规则 |
 |----------|--------|----------|
-| App 入口 | `Sources/CinemaMode/App/` | `<AppName>App.swift`, `AppDelegate.swift` |
-| 页面 / UI | `Sources/CinemaMode/Views/` | 以主要视图命名，如 `MenuBarMenuView.swift` |
+| App 入口 | `Sources/CinemaMode/App/` | `<AppName>App.swift` |
+| 页面 / UI | `Sources/CinemaMode/Views/` | 以主要视图命名，如 `ExitFloatingView.swift` |
 | 可复用 UI | `Sources/CinemaMode/Views/Components/` | 以组件名命名 |
 | 业务逻辑 | `Sources/CinemaModeCore/Services/` | `<Domain>Service.swift` |
 | 平台桥接 | `Sources/CinemaMode/Services/` | `<Capability>Controller.swift` 或 `<Capability>Monitor.swift` |
@@ -101,3 +99,5 @@ project-root/
 |------|----------|------|
 | 2026-06-18 | 初始化项目结构规划。 | 文档阶段。 |
 | 2026-06-18 | 对齐当前 `Sources/` 目录结构。 | 代码路径更新。 |
+| 2026-06-19 | 移除 `MenuBarMenuView.swift`，状态栏入口改为原生状态菜单。 | 对齐最新实现。 |
+| 2026-06-19 | 移除 `AppDelegate.swift`，应用入口改为纯 AppKit 生命周期。 | 对齐最新实现。 |

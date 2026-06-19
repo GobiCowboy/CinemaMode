@@ -29,12 +29,28 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
                 model: model,
                 onExit: { [weak self] in
                     Task { @MainActor in
+                        self?.logger.info(
+                            module: "floatingPanel",
+                            action: "exit.tap",
+                            message: "Exit floating panel tapped",
+                            context: nil
+                        )
                         self?.onExit?()
                     }
                 },
                 onDrag: { [weak self] delta in
                     Task { @MainActor in
                         self?.move(by: delta)
+                    }
+                },
+                onPointerEvent: { [weak self] action, context in
+                    Task { @MainActor in
+                        self?.logger.info(
+                            module: "floatingPanel",
+                            action: action,
+                            message: "Exit floating panel pointer event",
+                            context: context
+                        )
                     }
                 }
             )

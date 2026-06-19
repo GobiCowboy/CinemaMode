@@ -1,16 +1,27 @@
-import SwiftUI
+import AppKit
 
+@MainActor
 @main
-struct CinemaModeApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    @StateObject private var environment = AppEnvironment()
-    @State private var inserted = false
+final class CinemaModeApp: NSObject, NSApplicationDelegate {
+    private static var retainedDelegate: CinemaModeApp?
 
-    var body: some Scene {
-        MenuBarExtra(isInserted: $inserted) {
-            EmptyView()
-        } label: {
-            EmptyView()
-        }
+    private var environment: AppEnvironment?
+
+    static func main() {
+        let app = NSApplication.shared
+        let delegate = CinemaModeApp()
+        retainedDelegate = delegate
+        app.delegate = delegate
+        app.setActivationPolicy(.accessory)
+        app.run()
+    }
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        NSApp.setActivationPolicy(.accessory)
+        environment = AppEnvironment()
+    }
+
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        false
     }
 }

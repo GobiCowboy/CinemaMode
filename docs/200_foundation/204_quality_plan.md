@@ -33,7 +33,7 @@ log stream --predicate 'subsystem == "com.cinemamode.app"'
 | 模块 | 测试重点 |
 |------|----------|
 | `CinemaModeService` | 状态机流转、重复进入、重复退出、失败恢复 |
-| `PresentationController` | 保存快照、合法 options 组合、恢复调用 |
+| `SystemPresentationController` | 保存快照、覆盖层显示、恢复调用 |
 | `FloatingPanelController` | show / close 幂等、拖动、屏幕变化后的定位策略 |
 | `PointerActivityMonitor` | 静止、移动、悬停状态到透明度的映射 |
 | `PreferencesStore` | 后续如引入则覆盖默认值、偏好读写、无敏感数据 |

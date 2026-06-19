@@ -15,7 +15,7 @@
 用户通过一次点击进入低干扰观影状态：
 
 - 菜单栏里的 Cinema Mode 状态栏图标作为入口。
-- 隐藏菜单栏和 Dock。
+- 通过系统 chrome 覆盖层呈现菜单栏和 Dock 隐藏效果。
 - 保存进入前系统显示状态，方便退出时恢复。
 - 创建退出浮窗，让用户不会被困住。
 - 不要求用户理解权限、系统设置或快捷键。
@@ -23,21 +23,23 @@
 ## 3. 用户流程
 
 1. 用户打开 Safari、IINA、VLC 或其他内容应用。
-2. 用户点击菜单栏上的 Cinema Mode 状态栏图标。
-3. 系统检查当前是否已经处于观影模式。
-4. 系统保存当前 `NSApplication.PresentationOptions`。
-5. 系统先收起状态栏 popover，并在当前 Space 建立透明激活锚点。
-6. 系统应用观影模式 presentation options。
+2. 用户点击菜单栏上的 Cinema Mode 状态栏图标，系统弹出原生状态菜单。
+3. 用户点击 `Enter Cinema Mode`。
+4. 系统检查当前是否已经处于观影模式。
+5. 系统保存当前 `NSApplication.PresentationOptions`。
+6. 系统显示非激活的系统 chrome 覆盖层。
 7. 系统显示退出浮窗。
-8. 用户留在当前桌面，同时看到菜单栏和 Dock 消失，屏幕进入低干扰状态。
+8. 系统尽量保持当前播放器或浏览器的前台状态。
+9. 用户留在当前桌面，同时看到菜单栏和 Dock 被覆盖，屏幕进入低干扰状态。
 
 ## 4. 页面与交互
 
 | 页面 / 区域 | 元素 | 交互行为 | 状态 |
 |-------------|------|----------|------|
+| 菜单栏入口 | 原生状态菜单 | 点击图标后显示功能项 | idle |
 | 菜单栏入口 | 进入按钮 | 点击后调用 `CinemaModeService.enter()` | idle |
 | 菜单栏入口 | 状态反馈 | 进入中避免重复点击 | entering |
-| 系统屏幕 | 菜单栏 / Dock | 进入成功后隐藏或自动隐藏 | active |
+| 系统屏幕 | 菜单栏 / Dock | 进入成功后被覆盖 | active |
 | 屏幕右下角 | 退出浮窗 | 进入成功后显示 | active |
 
 ## 5. 涉及数据
@@ -46,8 +48,7 @@
 |------|------|------|----------|
 | 当前状态 | `CinemaModeService` | 防止重复进入和错误流转 | `CinemaModeState` |
 | 原始 presentation options | `NSApplication.shared.presentationOptions` | 退出时恢复 | `PresentationSnapshot` |
-| activation policy | `NSApplication.shared` | 菜单栏 app 进入前临时切为 `.regular`，退出后恢复 `.accessory` | 运行时状态 |
-| 当前 Space 锚点位置 | 鼠标所在屏幕坐标 | 激活 app 时保持在当前桌面 | 运行时状态 |
+| 系统 chrome 覆盖层 | `SystemPresentationController` | 呈现菜单栏和 Dock 的隐藏效果 | 运行时状态 |
 | 进入时间 | 系统时间 | 日志和状态追踪 | `CinemaModeState` |
 
 ## 6. 实现步骤
@@ -55,12 +56,11 @@
 | 步骤 | 文件 / 模块 | 做什么 | 完成标准 |
 |:----:|------------|--------|----------|
 | 1 | `CinemaMode/Models/CinemaModeState.swift` | 定义状态机 phase | 覆盖 idle、entering、active、exiting、recovering、failed |
-| 2 | `CinemaMode/Platform/PresentationController.swift` | 封装保存和应用 presentation options | UI 层不能直接接触 AppKit options |
+| 2 | `Sources/CinemaMode/Services/SystemPresentationController.swift` | 保存快照并显示系统 chrome 覆盖层 | UI 层不能直接接触 AppKit options |
 | 3 | `Sources/CinemaModeCore/Services/CinemaModeService.swift` | 实现 `enter()` 编排 | 重复进入不会创建重复浮窗 |
 | 4 | `Sources/CinemaMode/Services/FloatingPanelController.swift` | 提供 `show()` 接口供进入后调用 | 进入成功后浮窗可见 |
-| 5 | `Sources/CinemaMode/App/MenuBarStatusItemController.swift` | 创建入口并在进入前收起 popover | 进入时不遗留菜单弹层 |
-| 6 | `Sources/CinemaMode/Views/MenuBarMenuView.swift` | 接入进入按钮 | 用户一次点击即可触发 |
-| 7 | `Sources/CinemaMode/Services/SystemLogger.swift` | 记录进入流程日志 | 成功、失败路径有日志 |
+| 5 | `Sources/CinemaMode/App/MenuBarStatusItemController.swift` | 创建原生状态菜单并接入进入命令 | 点击图标可见功能项 |
+| 6 | `Sources/CinemaMode/Services/SystemLogger.swift` | 记录进入流程日志 | 成功、失败路径有日志 |
 
 ## 7. 接口 / 函数
 
@@ -75,9 +75,11 @@
 
 | 场景 | level | module | action | message | context |
 |------|-------|--------|--------|---------|---------|
+| 状态菜单进入点击 | info | `menuBar` | `enter.tap` | Enter cinema mode requested from status menu | `phase` |
 | 开始进入 | info | `cinemaMode` | `enter.start` | Start entering cinema mode | `phase` |
 | 状态快照成功 | info | `presentation` | `snapshot.capture` | Presentation snapshot captured | `optionsRawValue` |
-| 应用系统选项成功 | info | `presentation` | `options.apply` | Cinema presentation options applied | `optionsRawValue`, `actualOptionsRawValue`, `activationBefore`, `activationAfter`, `frontmostBefore`, `frontmostAfter`, `anchorFrame` |
+| 覆盖层显示成功 | info | `presentation` | `overlay.apply` | Cinema overlay applied without activating the app | `frontmostBefore`, `frontmostAfter`, `focusTarget`, `restoredExternalFocus`, `presentationOptionsRawValue` |
+| 覆盖层面板显示 | info | `presentation` | `chromeCover.show` | System chrome cover panels shown | `count`, `frames` |
 | 浮窗显示成功 | info | `floatingPanel` | `show` | Exit floating panel shown | `anchor` |
 | 重复进入 | warn | `cinemaMode` | `enter.ignored` | Enter ignored because mode is already active | `phase` |
 | 进入失败 | error | `cinemaMode` | `enter.failed` | Failed to enter cinema mode | `errorType` |
@@ -97,7 +99,7 @@
 
 | 决定 | 说明 |
 |------|------|
-| 抽象封装 | presentation 控制必须集中到 `PresentationController` |
+| 抽象封装 | presentation 控制必须集中到 `SystemPresentationController` |
 | 是否记录到待抽象 | 是 |
 | 处理原因 | 301 负责进入，303 负责退出，二者共享系统状态控制 |
 
@@ -110,7 +112,6 @@
 | `Sources/CinemaMode/Services/FloatingPanelController.swift` | 退出浮窗显示 | 已创建 |
 | `Sources/CinemaMode/App/MenuBarStatusItemController.swift` | 菜单栏入口 | 已创建 |
 | `Sources/CinemaMode/App/CinemaModeApp.swift` | 应用 scene 载体 | 已创建 |
-| `Sources/CinemaMode/Views/MenuBarMenuView.swift` | 用户入口 | 已创建 |
 | `Sources/CinemaMode/Views/MenuBarIconView.swift` | 菜单栏图标样式 | 已创建 |
 | `Sources/CinemaMode/Services/SystemLogger.swift` | 统一日志 | 已创建 |
 
@@ -130,5 +131,4 @@
 | 日期 | 更新内容 | 涉及文件 |
 |------|----------|----------|
 | 2026-06-18 | 补充状态栏入口描述与真实代码路径。 | 本文件、000、901 |
-| 2026-06-19 | 补充进入前临时切换 activation policy 的行为和日志字段。 | 本文件、103、904 |
-| 2026-06-19 | 补充当前 Space 激活锚点和进入前关闭 popover 的流程。 | 本文件、103、206、904 |
+| 2026-06-19 | 改为非激活系统 chrome 覆盖层，避免抢占播放器焦点。 | 本文件、103、206、904 |

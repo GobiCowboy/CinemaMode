@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 import SwiftUI
 import CinemaModeCore
@@ -6,7 +7,7 @@ struct ExitFloatingView: View {
     @ObservedObject var model: FloatingWindowModel
     let onExit: @Sendable () -> Void
     let onDrag: (CGSize) -> Void
-    @State private var lastTranslation: CGSize = .zero
+    let onPointerEvent: (String, [String: String]) -> Void
 
     var body: some View {
         ZStack {
@@ -65,6 +66,12 @@ struct ExitFloatingView: View {
                 .font(.system(size: 8, weight: .bold))
                 .foregroundStyle(.cyan)
                 .offset(x: 14, y: -14)
+            FloatingPanelEventCatcher(
+                onExit: onExit,
+                onDrag: onDrag,
+                onPointerEvent: onPointerEvent
+            )
+            .frame(width: 72, height: 72)
         }
         .frame(width: 72, height: 72)
         .contentShape(Circle())
@@ -72,28 +79,119 @@ struct ExitFloatingView: View {
         .scaleEffect(model.state.isHovered ? 1.06 : 1.0)
         .shadow(color: .black.opacity(model.state.isHovered ? 0.42 : 0.28), radius: model.state.isHovered ? 20 : 14, x: 0, y: 10)
         .animation(.spring(response: 0.22, dampingFraction: 0.78), value: model.state.isHovered)
-        .gesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { value in
-                    let delta = CGSize(
-                        width: value.translation.width - lastTranslation.width,
-                        height: value.translation.height - lastTranslation.height
-                    )
-                    if abs(delta.width) > 0.5 || abs(delta.height) > 0.5 {
-                        onDrag(delta)
-                    }
-                    lastTranslation = value.translation
-                }
-                .onEnded { value in
-                    let distance = hypot(value.translation.width, value.translation.height)
-                    if distance < 4 {
-                        onExit()
-                    }
-                    lastTranslation = .zero
-                }
-        )
         .onHover { isHovering in
             model.setHovered(isHovering)
         }
+    }
+}
+
+private struct FloatingPanelEventCatcher: NSViewRepresentable {
+    let onExit: @Sendable () -> Void
+    let onDrag: (CGSize) -> Void
+    let onPointerEvent: (String, [String: String]) -> Void
+
+    func makeNSView(context: Context) -> FloatingPanelEventView {
+        FloatingPanelEventView(
+            onExit: onExit,
+            onDrag: onDrag,
+            onPointerEvent: onPointerEvent
+        )
+    }
+
+    func updateNSView(_ nsView: FloatingPanelEventView, context: Context) {
+        nsView.onExit = onExit
+        nsView.onDrag = onDrag
+        nsView.onPointerEvent = onPointerEvent
+    }
+}
+
+private final class FloatingPanelEventView: NSView {
+    var onExit: (@Sendable () -> Void)
+    var onDrag: (CGSize) -> Void
+    var onPointerEvent: (String, [String: String]) -> Void
+
+    private var mouseDownLocation: CGPoint?
+    private var lastDragLocation: CGPoint?
+    private var didDrag = false
+
+    init(
+        onExit: @escaping @Sendable () -> Void,
+        onDrag: @escaping (CGSize) -> Void,
+        onPointerEvent: @escaping (String, [String: String]) -> Void
+    ) {
+        self.onExit = onExit
+        self.onDrag = onDrag
+        self.onPointerEvent = onPointerEvent
+        super.init(frame: .zero)
+        wantsLayer = true
+        layer?.backgroundColor = NSColor.clear.cgColor
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool {
+        true
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        let location = event.locationInWindow
+        mouseDownLocation = location
+        lastDragLocation = location
+        didDrag = false
+        onPointerEvent("pointer.down", [
+            "location": pointSummary(location),
+            "windowIsKey": "\(window?.isKeyWindow ?? false)",
+            "windowIsMain": "\(window?.isMainWindow ?? false)"
+        ])
+    }
+
+    override func mouseDragged(with event: NSEvent) {
+        let location = event.locationInWindow
+        guard let lastDragLocation else {
+            self.lastDragLocation = location
+            return
+        }
+
+        let delta = CGSize(
+            width: location.x - lastDragLocation.x,
+            height: location.y - lastDragLocation.y
+        )
+        if let mouseDownLocation {
+            let dragDistance = hypot(location.x - mouseDownLocation.x, location.y - mouseDownLocation.y)
+            didDrag = dragDistance >= 4
+        }
+
+        if abs(delta.width) > 0.5 || abs(delta.height) > 0.5 {
+            onDrag(delta)
+        }
+        self.lastDragLocation = location
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        defer {
+            mouseDownLocation = nil
+            lastDragLocation = nil
+            didDrag = false
+        }
+
+        let location = event.locationInWindow
+        let downLocation = mouseDownLocation ?? location
+        let distance = hypot(location.x - downLocation.x, location.y - downLocation.y)
+        onPointerEvent("pointer.up", [
+            "didDrag": "\(didDrag)",
+            "distance": String(format: "%.2f", distance),
+            "location": pointSummary(location),
+            "windowIsKey": "\(window?.isKeyWindow ?? false)",
+            "windowIsMain": "\(window?.isMainWindow ?? false)"
+        ])
+        if distance < 4 {
+            onExit()
+        }
+    }
+
+    private func pointSummary(_ point: CGPoint) -> String {
+        "x:\(Int(point.x)),y:\(Int(point.y))"
     }
 }

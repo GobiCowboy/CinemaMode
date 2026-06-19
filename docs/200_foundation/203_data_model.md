@@ -60,8 +60,8 @@
 
 | 阶段 | 位置 | 说明 |
 |------|------|------|
-| 创建 | `PresentationController.capture()` | 设置新 presentation options 前创建 |
-| 更新 | `PresentationController.restore()` | 恢复失败时更新重试次数 |
+| 创建 | `SystemPresentationController.captureSnapshot()` | 设置新 presentation options 前创建 |
+| 更新 | `SystemPresentationController.restore(from:)` | 恢复失败时更新重试次数 |
 | 删除 | `CinemaModeService.exit()` | 成功恢复后清空 |
 
 ### FloatingWindowState

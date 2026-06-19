@@ -31,7 +31,7 @@
 
 **是否已有可复用能力？**
 
-优先复用 `CinemaModeService`、`PresentationController`、`FloatingPanelController`、`Logger`。
+优先复用 `CinemaModeService`、`SystemPresentationController`、`FloatingPanelController`、`Logger`。
 
 **是否命中待抽象记录？**
 
