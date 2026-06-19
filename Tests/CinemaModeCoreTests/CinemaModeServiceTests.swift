@@ -8,7 +8,6 @@ final class CinemaModeServiceTests: XCTestCase {
         let environment = EnvironmentPreferencesControllerSpy()
         let panel = FloatingPanelControllerSpy()
         let monitor = PointerMonitorSpy()
-        let escapeMonitor = EscapeMonitorSpy()
         let preferences = PreferencesStore(defaults: UserDefaults(suiteName: #function)!)
         let logger = LoggerSpy()
         let service = CinemaModeService(
@@ -16,7 +15,6 @@ final class CinemaModeServiceTests: XCTestCase {
             environmentPreferencesController: environment,
             floatingPanelController: panel,
             pointerMonitor: monitor,
-            escapeKeyMonitor: escapeMonitor,
             preferencesStore: preferences,
             logger: logger
         )
@@ -30,7 +28,6 @@ final class CinemaModeServiceTests: XCTestCase {
         XCTAssertEqual(presentation.applyCount, 1)
         XCTAssertEqual(panel.showCount, 1)
         XCTAssertEqual(monitor.startCount, 1)
-        XCTAssertEqual(escapeMonitor.startCount, 1)
         XCTAssertEqual(logger.infoActions, ["cinemaMode:enter.start", "cinemaMode:enter.success"])
     }
 
@@ -39,7 +36,6 @@ final class CinemaModeServiceTests: XCTestCase {
         let environment = EnvironmentPreferencesControllerSpy()
         let panel = FloatingPanelControllerSpy()
         let monitor = PointerMonitorSpy()
-        let escapeMonitor = EscapeMonitorSpy()
         let preferences = PreferencesStore(defaults: UserDefaults(suiteName: #function)!)
         let logger = LoggerSpy()
         let service = CinemaModeService(
@@ -47,7 +43,6 @@ final class CinemaModeServiceTests: XCTestCase {
             environmentPreferencesController: environment,
             floatingPanelController: panel,
             pointerMonitor: monitor,
-            escapeKeyMonitor: escapeMonitor,
             preferencesStore: preferences,
             logger: logger
         )
@@ -58,7 +53,6 @@ final class CinemaModeServiceTests: XCTestCase {
         XCTAssertEqual(service.phase, .active)
         XCTAssertEqual(panel.showCount, 1)
         XCTAssertEqual(monitor.startCount, 1)
-        XCTAssertEqual(escapeMonitor.startCount, 1)
         XCTAssertTrue(logger.warnActions.contains("cinemaMode:enter.ignored"))
     }
 
@@ -67,7 +61,6 @@ final class CinemaModeServiceTests: XCTestCase {
         let environment = EnvironmentPreferencesControllerSpy()
         let panel = FloatingPanelControllerSpy()
         let monitor = PointerMonitorSpy()
-        let escapeMonitor = EscapeMonitorSpy()
         let preferences = PreferencesStore(defaults: UserDefaults(suiteName: #function)!)
         let logger = LoggerSpy()
         let service = CinemaModeService(
@@ -75,7 +68,6 @@ final class CinemaModeServiceTests: XCTestCase {
             environmentPreferencesController: environment,
             floatingPanelController: panel,
             pointerMonitor: monitor,
-            escapeKeyMonitor: escapeMonitor,
             preferencesStore: preferences,
             logger: logger
         )
@@ -88,7 +80,6 @@ final class CinemaModeServiceTests: XCTestCase {
         XCTAssertEqual(environment.restoreCount, 1)
         XCTAssertEqual(panel.hideCount, 1)
         XCTAssertEqual(monitor.stopCount, 1)
-        XCTAssertEqual(escapeMonitor.stopCount, 1)
         XCTAssertNil(service.lastError)
     }
 
@@ -98,7 +89,6 @@ final class CinemaModeServiceTests: XCTestCase {
         let panel = FloatingPanelControllerSpy()
         panel.showError = AppError.floatingPanelFailed("panel failed")
         let monitor = PointerMonitorSpy()
-        let escapeMonitor = EscapeMonitorSpy()
         let preferences = PreferencesStore(defaults: UserDefaults(suiteName: #function)!)
         let logger = LoggerSpy()
         let service = CinemaModeService(
@@ -106,7 +96,6 @@ final class CinemaModeServiceTests: XCTestCase {
             environmentPreferencesController: environment,
             floatingPanelController: panel,
             pointerMonitor: monitor,
-            escapeKeyMonitor: escapeMonitor,
             preferencesStore: preferences,
             logger: logger
         )
@@ -118,40 +107,8 @@ final class CinemaModeServiceTests: XCTestCase {
         XCTAssertEqual(environment.restoreCount, 1)
         XCTAssertEqual(panel.hideCount, 1)
         XCTAssertEqual(monitor.startCount, 0)
-        XCTAssertEqual(escapeMonitor.startCount, 0)
         XCTAssertEqual(service.lastError, .floatingPanelFailed("panel failed"))
         XCTAssertTrue(logger.errorActions.contains("cinemaMode:enter.failed"))
-    }
-
-    func testEscapeKeyExitsWhenEnabled() async {
-        let presentation = PresentationControllerSpy()
-        let environment = EnvironmentPreferencesControllerSpy()
-        let panel = FloatingPanelControllerSpy()
-        let monitor = PointerMonitorSpy()
-        let escapeMonitor = EscapeMonitorSpy()
-        let preferences = PreferencesStore(defaults: UserDefaults(suiteName: #function)!)
-        let logger = LoggerSpy()
-        let service = CinemaModeService(
-            presentationController: presentation,
-            environmentPreferencesController: environment,
-            floatingPanelController: panel,
-            pointerMonitor: monitor,
-            escapeKeyMonitor: escapeMonitor,
-            preferencesStore: preferences,
-            logger: logger
-        )
-
-        service.enter()
-        escapeMonitor.triggerEscape()
-        await Task.yield()
-
-        XCTAssertEqual(service.phase, .idle)
-        XCTAssertEqual(presentation.restoreCount, 1)
-        XCTAssertEqual(environment.restoreCount, 1)
-        XCTAssertEqual(panel.hideCount, 1)
-        XCTAssertEqual(monitor.stopCount, 1)
-        XCTAssertEqual(escapeMonitor.stopCount, 1)
-        XCTAssertTrue(logger.infoActions.contains("keyboard:escape.exit"))
     }
 }
 
@@ -160,7 +117,7 @@ final class EnvironmentPreferencesControllerSpy: EnvironmentPreferencesControlli
     var captureCount = 0
     var applyCount = 0
     var restoreCount = 0
-    var snapshot = EnvironmentPreferencesSnapshot(outputVolume: 0.5, displayBrightness: 0.7)
+    var snapshot = EnvironmentPreferencesSnapshot(outputVolume: 0.5)
 
     func captureSnapshot() throws -> EnvironmentPreferencesSnapshot {
         captureCount += 1
@@ -239,26 +196,6 @@ final class PointerMonitorSpy: PointerActivityMonitoring {
 
     func stop() {
         stopCount += 1
-    }
-}
-
-@MainActor
-final class EscapeMonitorSpy: EscapeKeyMonitoring {
-    var startCount = 0
-    var stopCount = 0
-    var onEscape: (() -> Void)?
-
-    func start(onEscape: @escaping @Sendable () -> Void) throws {
-        startCount += 1
-        self.onEscape = onEscape
-    }
-
-    func stop() {
-        stopCount += 1
-    }
-
-    func triggerEscape() {
-        onEscape?()
     }
 }
 

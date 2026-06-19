@@ -14,12 +14,8 @@
 
 提供一个独立的设置页，让普通 Mac 用户在不学习系统原理的前提下配置观影模式偏好：
 
-- 勿扰模式
 - 音量
-- 亮度（尽力而为，不阻断进入）
 - 语言
-- 退出恢复
-- Esc 退出
 
 设置页不承担内容识别、不承担播放器适配，只负责用户偏好。
 
@@ -27,7 +23,7 @@
 
 1. 用户从菜单栏菜单打开 `Settings...`。
 2. 系统显示独立设置窗口。
-3. 用户调整勿扰、音量、亮度、语言和退出偏好。
+3. 用户调整音量和语言。
 4. 系统即时保存偏好。
 5. 下次进入观影模式时读取这些偏好。
 6. 语言区块默认放在设置页最上方，优先完成界面语言选择。
@@ -36,24 +32,15 @@
 
 | 页面 / 区域 | 元素 | 交互行为 | 状态 |
 |-------------|------|----------|------|
-| 设置页 | 勿扰模式开关 | 控制是否在观影模式启用勿扰 | on/off |
 | 设置页 | 音量滑块 | 设置观影时的目标音量 | 0-100 |
-| 设置页 | 亮度滑块 | 设置观影时的目标内屏亮度 | 0-100 |
 | 设置页 | 语言选项 | 切换中文、英文或系统 | segmented |
-| 设置页 | 恢复音量开关 | 控制退出时是否恢复原音量 | on/off |
-| 设置页 | 恢复亮度开关 | 控制退出时是否恢复原亮度 | on/off |
-| 设置页 | Esc 退出开关 | 控制是否允许 Esc 退出观影模式 | on/off |
 
 ## 5. 涉及数据
 
 | 数据 | 来源 | 用途 | 对应模型 |
 |------|------|------|----------|
-| 勿扰模式 | 设置页 | 进入观影模式时应用用户偏好 | `CinemaModePreferences` |
 | 目标音量 | 设置页 | 进入时预设观影音量 | `CinemaModePreferences` |
-| 目标亮度 | 设置页 | 进入时预设内屏亮度，失败时仅记录日志 | `CinemaModePreferences` |
 | 语言 | 设置页 | 控制界面文案显示语言 | `CinemaModePreferences` |
-| 退出恢复开关 | 设置页 | 退出时决定是否恢复原状态 | `CinemaModePreferences` |
-| Esc 退出开关 | 设置页 | 决定是否保留 Esc 兜底 | `CinemaModePreferences` |
 
 ## 6. 实现步骤
 
@@ -64,7 +51,6 @@
 | 3 | `Sources/CinemaMode/Services/SettingsWindowController.swift` | 打开和管理设置窗口 | 菜单项可打开设置页 |
 | 4 | `Sources/CinemaMode/App/MenuBarStatusItemController.swift` | 提供设置菜单入口 | 菜单项可发现 |
 | 5 | 后续进入流程 | 读取设置并应用 | 偏好能影响观影模式 |
-| 6 | `Sources/CinemaMode/Services/SystemEscapeKeyMonitor.swift` | 监听 Esc 并回调退出 | 可在观影模式中按 Esc 退出 |
 
 ## 7. 日志设计
 
@@ -72,8 +58,6 @@
 |------|-------|--------|--------|---------|---------|
 | 打开设置页 | info | `menuBar` | `settings.tap` | Settings requested from status menu | `phase` |
 | 保存偏好 | debug | `preferences` | `save` | Preference updated | `key` |
-| Esc 触发退出 | info | `keyboard` | `escape.exit` | Escape key requested cinema mode exit | 无 |
-| 亮度应用失败 | warn | `preferences` | `brightness.apply.failed` | Failed to set built-in display brightness | `status` |
 
 ## 8. 复用检查
 
@@ -115,4 +99,4 @@
 | 日期 | 更新内容 | 涉及文件 |
 |------|----------|----------|
 | 2026-06-19 | 新增设置与偏好功能文档，作为新需求基线。 | 本文件、101、102、203 |
-| 2026-06-19 | 调整语言区块顺序，补充 Esc 退出和亮度桥接的当前实现说明。 | 本文件、206 |
+| 2026-06-19 | 收敛设置页，只保留音量和语言。 | 本文件、206、203 |

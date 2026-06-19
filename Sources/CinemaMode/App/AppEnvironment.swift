@@ -11,7 +11,6 @@ final class AppEnvironment: ObservableObject {
     let settingsWindowController: SettingsWindowController
     let menuBarStatusItemController: MenuBarStatusItemController
     let pointerMonitor: SystemPointerActivityMonitor
-    let escapeKeyMonitor: SystemEscapeKeyMonitor
     let service: CinemaModeService
 
     init() {
@@ -22,7 +21,6 @@ final class AppEnvironment: ObservableObject {
         let preferencesStore = PreferencesStore()
         let settingsWindowController = SettingsWindowController(preferences: preferencesStore)
         let pointerMonitor = SystemPointerActivityMonitor(logger: logger)
-        let escapeKeyMonitor = SystemEscapeKeyMonitor(logger: logger)
 
         self.logger = logger
         self.presentationController = presentationController
@@ -31,13 +29,11 @@ final class AppEnvironment: ObservableObject {
         self.preferencesStore = preferencesStore
         self.settingsWindowController = settingsWindowController
         self.pointerMonitor = pointerMonitor
-        self.escapeKeyMonitor = escapeKeyMonitor
         self.service = CinemaModeService(
             presentationController: presentationController,
             environmentPreferencesController: environmentPreferencesController,
             floatingPanelController: floatingPanelController,
             pointerMonitor: pointerMonitor,
-            escapeKeyMonitor: escapeKeyMonitor,
             preferencesStore: preferencesStore,
             logger: logger
         )

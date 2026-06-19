@@ -21,17 +21,6 @@ struct SettingsView: View {
             }
 
             Section {
-                Toggle(copy.doNotDisturbToggle, isOn: $preferences.isDoNotDisturbEnabled)
-                Toggle(copy.restoreVolumeToggle, isOn: $preferences.restoreVolumeOnExit)
-                Toggle(copy.restoreBrightnessToggle, isOn: $preferences.restoreBrightnessOnExit)
-                Toggle(copy.allowEscToggle, isOn: $preferences.exitWithEscapeKey)
-            } header: {
-                Text(copy.behaviorSection)
-            } footer: {
-                Text(copy.behaviorFootnote)
-            }
-
-            Section {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Label(copy.volumeLabel, systemImage: "speaker.wave.2.fill")
@@ -40,16 +29,6 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                     Slider(value: $preferences.preferredVolume, in: 0...100, step: 1)
-                }
-
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Label(copy.brightnessLabel, systemImage: "sun.max.fill")
-                        Spacer()
-                        Text("\(Int(preferences.preferredBrightness))%")
-                            .foregroundStyle(.secondary)
-                    }
-                    Slider(value: $preferences.preferredBrightness, in: 0...100, step: 1)
                 }
             } header: {
                 Text(copy.levelsSection)
