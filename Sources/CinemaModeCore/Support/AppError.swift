@@ -7,6 +7,7 @@ public enum AppError: Error, Equatable, LocalizedError, Sendable {
     case presentationRestoreFailed(String)
     case floatingPanelFailed(String)
     case pointerMonitorFailed(String)
+    case escapeMonitorFailed(String)
     case preferencesCaptureFailed(String)
     case preferencesApplyFailed(String)
     case preferencesRestoreFailed(String)
@@ -19,6 +20,7 @@ public enum AppError: Error, Equatable, LocalizedError, Sendable {
              .presentationRestoreFailed(let message),
              .floatingPanelFailed(let message),
              .pointerMonitorFailed(let message),
+             .escapeMonitorFailed(let message),
              .preferencesCaptureFailed(let message),
              .preferencesApplyFailed(let message),
              .preferencesRestoreFailed(let message):

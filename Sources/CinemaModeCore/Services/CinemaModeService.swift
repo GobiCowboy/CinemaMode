@@ -11,6 +11,7 @@ public final class CinemaModeService: ObservableObject {
     private let environmentPreferencesController: any EnvironmentPreferencesControlling
     private let floatingPanelController: any FloatingPanelControlling
     private let pointerMonitor: any PointerActivityMonitoring
+    private let escapeKeyMonitor: any EscapeKeyMonitoring
     private let preferencesStore: PreferencesStore
     private let logger: any CinemaModeLogging
 
@@ -22,6 +23,7 @@ public final class CinemaModeService: ObservableObject {
         environmentPreferencesController: any EnvironmentPreferencesControlling,
         floatingPanelController: any FloatingPanelControlling,
         pointerMonitor: any PointerActivityMonitoring,
+        escapeKeyMonitor: any EscapeKeyMonitoring,
         preferencesStore: PreferencesStore,
         logger: any CinemaModeLogging = NullCinemaModeLogger()
     ) {
@@ -29,6 +31,7 @@ public final class CinemaModeService: ObservableObject {
         self.environmentPreferencesController = environmentPreferencesController
         self.floatingPanelController = floatingPanelController
         self.pointerMonitor = pointerMonitor
+        self.escapeKeyMonitor = escapeKeyMonitor
         self.preferencesStore = preferencesStore
         self.logger = logger
     }
@@ -82,6 +85,11 @@ public final class CinemaModeService: ObservableObject {
                 }
             }
 
+            try escapeKeyMonitor.start { [weak self] in
+                Task { @MainActor in
+                    self?.handleEscapeKeyPress()
+                }
+            }
             try pointerMonitor.start { [weak self] visibility in
                 Task { @MainActor in
                     self?.handlePointerVisibilityChange(visibility)
@@ -125,7 +133,7 @@ public final class CinemaModeService: ObservableObject {
             context: ["phase": phase.rawValue]
         )
 
-        pointerMonitor.stop()
+        stopRuntimeMonitors()
         floatingPanelController.hide()
 
         guard let currentSnapshot = snapshot else {
@@ -191,7 +199,7 @@ public final class CinemaModeService: ObservableObject {
             context: ["phase": phase.rawValue]
         )
 
-        pointerMonitor.stop()
+        stopRuntimeMonitors()
         floatingPanelController.hide()
 
         if let currentSnapshot = snapshot {
@@ -238,8 +246,36 @@ public final class CinemaModeService: ObservableObject {
         )
     }
 
-    private func handleEnterFailure(_ error: Error) {
+    private func handleEscapeKeyPress() {
+        guard phase == .active else {
+            return
+        }
+
+        if preferencesStore.exitWithEscapeKey {
+            logger.info(
+                module: "keyboard",
+                action: "escape.exit",
+                message: "Escape key requested cinema mode exit",
+                context: nil
+            )
+            exit()
+        } else {
+            logger.debug(
+                module: "keyboard",
+                action: "escape.ignored",
+                message: "Escape key exit is disabled in preferences",
+                context: nil
+            )
+        }
+    }
+
+    private func stopRuntimeMonitors() {
         pointerMonitor.stop()
+        escapeKeyMonitor.stop()
+    }
+
+    private func handleEnterFailure(_ error: Error) {
+        stopRuntimeMonitors()
         floatingPanelController.hide()
 
         if let currentSnapshot = snapshot {

@@ -30,6 +30,7 @@
 3. 用户调整勿扰、音量、亮度、语言和退出偏好。
 4. 系统即时保存偏好。
 5. 下次进入观影模式时读取这些偏好。
+6. 语言区块默认放在设置页最上方，优先完成界面语言选择。
 
 ## 4. 页面与交互
 
@@ -63,6 +64,7 @@
 | 3 | `Sources/CinemaMode/Services/SettingsWindowController.swift` | 打开和管理设置窗口 | 菜单项可打开设置页 |
 | 4 | `Sources/CinemaMode/App/MenuBarStatusItemController.swift` | 提供设置菜单入口 | 菜单项可发现 |
 | 5 | 后续进入流程 | 读取设置并应用 | 偏好能影响观影模式 |
+| 6 | `Sources/CinemaMode/Services/SystemEscapeKeyMonitor.swift` | 监听 Esc 并回调退出 | 可在观影模式中按 Esc 退出 |
 
 ## 7. 日志设计
 
@@ -70,6 +72,7 @@
 |------|-------|--------|--------|---------|---------|
 | 打开设置页 | info | `menuBar` | `settings.tap` | Settings requested from status menu | `phase` |
 | 保存偏好 | debug | `preferences` | `save` | Preference updated | `key` |
+| Esc 触发退出 | info | `keyboard` | `escape.exit` | Escape key requested cinema mode exit | 无 |
 
 ## 8. 复用检查
 
@@ -111,3 +114,4 @@
 | 日期 | 更新内容 | 涉及文件 |
 |------|----------|----------|
 | 2026-06-19 | 新增设置与偏好功能文档，作为新需求基线。 | 本文件、101、102、203 |
+| 2026-06-19 | 调整语言区块顺序，补充 Esc 退出和亮度桥接的当前实现说明。 | 本文件、206 |

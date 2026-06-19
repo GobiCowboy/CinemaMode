@@ -72,6 +72,9 @@ print(error)
 | 显示系统 chrome 覆盖层 | `presentation` | `overlay.apply` / `chromeCover.show` | 成功 / 失败 / 前后台应用 / 覆盖层帧 / 当前前台焦点 |
 | 显示浮窗 | `floatingPanel` | `show` | 成功 / 失败 |
 | 鼠标状态变化 | `pointer` | `visibility.change` | debug 级别，状态变化即可 |
+| Esc 监控 | `keyboard` | `monitor.start` / `monitor.stop` | 进入 / 退出时挂载或卸载 |
+| Esc 触发退出 | `keyboard` | `escape.exit` | 用户按下 Esc 后请求退出 |
+| Esc 被禁用 | `keyboard` | `escape.ignored` | 偏好关闭时仅调试记录 |
 | 退出开始 | `cinemaMode` | `exit.start` | 当前 phase |
 | 恢复 presentation options | `presentation` | `options.restore` | 成功 / 失败 / 重试次数 |
 | 隐藏系统 chrome 覆盖层 | `presentation` | `chromeCover.hide` | 成功 / 失败 / 数量 |
@@ -117,3 +120,4 @@ print(error)
 | 2026-06-18 | 初始化日志系统设计。 | 文档阶段。 |
 | 2026-06-19 | 调整为覆盖层日志字段，移除 Space 锚点相关上下文。 | 对齐当前非激活实现。 |
 | 2026-06-19 | 增加设置页和偏好保存的日志字段。 | 对齐新需求。 |
+| 2026-06-19 | 增加 Esc 键监控日志。 | 对齐新的退出路径。 |

@@ -22,6 +22,12 @@ public protocol PointerActivityMonitoring: AnyObject {
 }
 
 @MainActor
+public protocol EscapeKeyMonitoring: AnyObject {
+    func start(onEscape: @escaping @Sendable () -> Void) throws
+    func stop()
+}
+
+@MainActor
 public protocol EnvironmentPreferencesControlling: Sendable {
     func captureSnapshot() throws -> EnvironmentPreferencesSnapshot
     func applyPreferences(from preferences: PreferencesStore) throws

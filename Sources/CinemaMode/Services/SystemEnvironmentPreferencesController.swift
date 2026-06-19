@@ -114,6 +114,7 @@ final class SystemEnvironmentPreferencesController: EnvironmentPreferencesContro
         guard let service = mainDisplayService() else {
             return nil
         }
+        defer { IOObjectRelease(service) }
 
         var brightness: Float = 0
         let result = IODisplayGetFloatParameter(service, 0, kIODisplayBrightnessKey as CFString, &brightness)
@@ -134,6 +135,8 @@ final class SystemEnvironmentPreferencesController: EnvironmentPreferencesContro
             return
         }
 
+        defer { IOObjectRelease(service) }
+
         let clampedValue = Float(max(0.0, min(1.0, value)))
         let result = IODisplaySetFloatParameter(service, 0, kIODisplayBrightnessKey as CFString, clampedValue)
         if result != kIOReturnSuccess {
@@ -142,6 +145,16 @@ final class SystemEnvironmentPreferencesController: EnvironmentPreferencesContro
     }
 
     private func mainDisplayService() -> io_service_t? {
+        if let service = matchingService(named: "AppleARMBacklight") {
+            logger.debug(
+                module: "preferences",
+                action: "brightness.service.selected",
+                message: "Using AppleARMBacklight brightness service",
+                context: ["provider": "AppleARMBacklight"]
+            )
+            return service
+        }
+
         let displayID = CGMainDisplayID()
         let vendorID = CGDisplayVendorNumber(displayID)
         let productID = CGDisplayModelNumber(displayID)
@@ -186,7 +199,29 @@ final class SystemEnvironmentPreferencesController: EnvironmentPreferencesContro
             break
         }
 
+        if matchedService != nil {
+            logger.debug(
+                module: "preferences",
+                action: "brightness.service.selected",
+                message: "Using IODisplayConnect brightness service",
+                context: ["provider": "IODisplayConnect"]
+            )
+        }
+
         return matchedService
+    }
+
+    private func matchingService(named serviceName: String) -> io_service_t? {
+        guard let matching = IOServiceMatching(serviceName) else {
+            return nil
+        }
+
+        let service = IOServiceGetMatchingService(kIOMainPortDefault, matching)
+        guard service != 0 else {
+            return nil
+        }
+
+        return service
     }
 
     private func runAppleScript(_ source: String) throws -> String {

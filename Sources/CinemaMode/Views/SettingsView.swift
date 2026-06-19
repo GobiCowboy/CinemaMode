@@ -8,6 +8,19 @@ struct SettingsView: View {
         let copy = CinemaModeCopy(language: preferences.preferredLanguage)
         Form {
             Section {
+                Picker("", selection: $preferences.preferredLanguageRawValue) {
+                    Text(copy.languageSystem).tag(AppLanguage.system.rawValue)
+                    Text(copy.languageChinese).tag(AppLanguage.chinese.rawValue)
+                    Text(copy.languageEnglish).tag(AppLanguage.english.rawValue)
+                }
+                .pickerStyle(.segmented)
+            } header: {
+                Text(copy.languageSection)
+            } footer: {
+                Text(copy.languageFootnote)
+            }
+
+            Section {
                 Toggle(copy.doNotDisturbToggle, isOn: $preferences.isDoNotDisturbEnabled)
                 Toggle(copy.restoreVolumeToggle, isOn: $preferences.restoreVolumeOnExit)
                 Toggle(copy.restoreBrightnessToggle, isOn: $preferences.restoreBrightnessOnExit)
@@ -53,19 +66,6 @@ struct SettingsView: View {
                 Text(copy.placementSection)
             } footer: {
                 Text(copy.placementFootnote)
-            }
-
-            Section {
-                Picker("", selection: $preferences.preferredLanguageRawValue) {
-                    Text(copy.languageSystem).tag(AppLanguage.system.rawValue)
-                    Text(copy.languageChinese).tag(AppLanguage.chinese.rawValue)
-                    Text(copy.languageEnglish).tag(AppLanguage.english.rawValue)
-                }
-                .pickerStyle(.segmented)
-            } header: {
-                Text(copy.languageSection)
-            } footer: {
-                Text(copy.languageFootnote)
             }
         }
         .formStyle(.grouped)
