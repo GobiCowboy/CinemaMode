@@ -16,7 +16,7 @@
 
 - 勿扰模式
 - 音量
-- 亮度
+- 亮度（尽力而为，不阻断进入）
 - 语言
 - 退出恢复
 - Esc 退出
@@ -50,7 +50,7 @@
 |------|------|------|----------|
 | 勿扰模式 | 设置页 | 进入观影模式时应用用户偏好 | `CinemaModePreferences` |
 | 目标音量 | 设置页 | 进入时预设观影音量 | `CinemaModePreferences` |
-| 目标亮度 | 设置页 | 进入时预设内屏亮度 | `CinemaModePreferences` |
+| 目标亮度 | 设置页 | 进入时预设内屏亮度，失败时仅记录日志 | `CinemaModePreferences` |
 | 语言 | 设置页 | 控制界面文案显示语言 | `CinemaModePreferences` |
 | 退出恢复开关 | 设置页 | 退出时决定是否恢复原状态 | `CinemaModePreferences` |
 | Esc 退出开关 | 设置页 | 决定是否保留 Esc 兜底 | `CinemaModePreferences` |
@@ -73,6 +73,7 @@
 | 打开设置页 | info | `menuBar` | `settings.tap` | Settings requested from status menu | `phase` |
 | 保存偏好 | debug | `preferences` | `save` | Preference updated | `key` |
 | Esc 触发退出 | info | `keyboard` | `escape.exit` | Escape key requested cinema mode exit | 无 |
+| 亮度应用失败 | warn | `preferences` | `brightness.apply.failed` | Failed to set built-in display brightness | `status` |
 
 ## 8. 复用检查
 

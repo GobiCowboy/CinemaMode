@@ -41,7 +41,7 @@ final class SystemEnvironmentPreferencesController: EnvironmentPreferencesContro
     func applyPreferences(from preferences: PreferencesStore) throws {
         do {
             try setOutputVolume(preferences.preferredVolumeFraction)
-            try setDisplayBrightness(preferences.preferredBrightnessFraction)
+            setDisplayBrightness(preferences.preferredBrightnessFraction)
 
             logger.info(
                 module: "preferences",
@@ -77,7 +77,7 @@ final class SystemEnvironmentPreferencesController: EnvironmentPreferencesContro
             }
 
             if preferences.restoreBrightnessOnExit, let displayBrightness = snapshot.displayBrightness {
-                try setDisplayBrightness(displayBrightness)
+                setDisplayBrightness(displayBrightness)
             }
 
             logger.info(
@@ -124,7 +124,7 @@ final class SystemEnvironmentPreferencesController: EnvironmentPreferencesContro
         return Double(brightness)
     }
 
-    private func setDisplayBrightness(_ value: Double) throws {
+    private func setDisplayBrightness(_ value: Double) {
         guard let service = mainDisplayService() else {
             logger.warn(
                 module: "preferences",
@@ -140,7 +140,15 @@ final class SystemEnvironmentPreferencesController: EnvironmentPreferencesContro
         let clampedValue = Float(max(0.0, min(1.0, value)))
         let result = IODisplaySetFloatParameter(service, 0, kIODisplayBrightnessKey as CFString, clampedValue)
         if result != kIOReturnSuccess {
-            throw AppError.preferencesApplyFailed("Failed to set built-in display brightness")
+            logger.warn(
+                module: "preferences",
+                action: "brightness.apply.failed",
+                message: "Failed to set built-in display brightness",
+                context: [
+                    "provider": service == 0 ? "unknown" : "selected",
+                    "status": "\(result)"
+                ]
+            )
         }
     }
 

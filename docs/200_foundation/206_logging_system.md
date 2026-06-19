@@ -75,6 +75,7 @@ print(error)
 | Esc 监控 | `keyboard` | `monitor.start` / `monitor.stop` | 进入 / 退出时挂载或卸载 |
 | Esc 触发退出 | `keyboard` | `escape.exit` | 用户按下 Esc 后请求退出 |
 | Esc 被禁用 | `keyboard` | `escape.ignored` | 偏好关闭时仅调试记录 |
+| 亮度应用失败 | `preferences` | `brightness.apply.failed` | 亮度控制不可用时仅告警 |
 | 退出开始 | `cinemaMode` | `exit.start` | 当前 phase |
 | 恢复 presentation options | `presentation` | `options.restore` | 成功 / 失败 / 重试次数 |
 | 隐藏系统 chrome 覆盖层 | `presentation` | `chromeCover.hide` | 成功 / 失败 / 数量 |
