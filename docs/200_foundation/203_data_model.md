@@ -8,7 +8,7 @@
 | `PresentationSnapshot` | 保存进入前的系统显示状态 | 301, 303 |
 | `FloatingWindowState` | 描述退出浮窗位置、透明度和 hover 状态 | 302, 303 |
 | `PointerVisibilityState` | 描述鼠标静止、移动、悬停状态 | 302 |
-| `UserPreferences` | 保存非敏感用户偏好 | 302 |
+| `CinemaModePreferences` | 保存非敏感用户偏好 | 304 |
 | `LogEvent` | 统一日志事件结构 | 全局 |
 
 ---
@@ -108,14 +108,19 @@
 | 更新 | `PointerActivityMonitor` | 根据鼠标事件和定时器更新 |
 | 删除 | `PointerActivityMonitor.stop()` | 退出观影模式时停止 |
 
-### UserPreferences
+### CinemaModePreferences
 
 #### 字段
 
 | 字段 | 类型 | 必填 | 默认值 | 约束 | 说明 |
 |------|------|:----:|--------|------|------|
-| `preferredAnchor` | enum | 是 | `bottomRight` | MVP 只使用右下角 | 后续可扩展 |
-| `hasSeenFirstLaunch` | Bool | 是 | false | 无 | 是否首次打开过 |
+| `isDoNotDisturbEnabled` | Bool | 是 | true | 无 | 是否在观影模式启用勿扰 |
+| `preferredVolume` | Double | 是 | 65 | 0...100 | 进入观影模式时的目标音量 |
+| `preferredBrightness` | Double | 是 | 75 | 0...100 | 进入观影模式时的目标内屏亮度 |
+| `restoreVolumeOnExit` | Bool | 是 | true | 无 | 退出时是否恢复原音量 |
+| `restoreBrightnessOnExit` | Bool | 是 | true | 无 | 退出时是否恢复原亮度 |
+| `exitWithEscapeKey` | Bool | 是 | true | 无 | 是否允许 Esc 退出 |
+| `preferredAnchor` | enum | 是 | `bottomRight` | MVP 只使用右下角 | 现阶段仅保留单一锚点 |
 
 #### 生命周期
 
@@ -149,3 +154,4 @@
 | 日期 | 变更内容 | 原因 |
 |------|----------|------|
 | 2026-06-18 | 初始化数据模型。 | 文档阶段。 |
+| 2026-06-19 | 将用户偏好收敛为观影设置数据模型。 | 对齐新需求。 |

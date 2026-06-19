@@ -16,21 +16,21 @@
 
 | 编号 | 文档 | 内容 | 状态 | 最后更新 |
 |------|------|------|------|----------|
-| 101 | 100_requirements_architecture/101_product_requirements.md | 产品需求 | 已完成 | 2026-06-18 |
-| 102 | 100_requirements_architecture/102_user_flows.md | 用户流程 | 已完成 | 2026-06-18 |
-| 103 | 100_requirements_architecture/103_architecture.md | 技术架构 | 已完成 | 2026-06-18 |
-| 104 | 100_requirements_architecture/104_technical_choices.md | 技术选型 | 已完成 | 2026-06-18 |
+| 101 | 100_requirements_architecture/101_product_requirements.md | 产品需求 | 已完成 | 2026-06-19 |
+| 102 | 100_requirements_architecture/102_user_flows.md | 用户流程 | 已完成 | 2026-06-19 |
+| 103 | 100_requirements_architecture/103_architecture.md | 技术架构 | 已完成 | 2026-06-19 |
+| 104 | 100_requirements_architecture/104_technical_choices.md | 技术选型 | 已完成 | 2026-06-19 |
 
 ## 200 基础配置
 
 | 编号 | 文档 | 内容 | 状态 | 最后更新 |
 |------|------|------|------|----------|
 | 201 | 200_foundation/201_environment_config.md | 运行环境和配置 | 已完成 | 2026-06-18 |
-| 202 | 200_foundation/202_project_structure.md | 项目目录结构 | 已完成 | 2026-06-18 |
-| 203 | 200_foundation/203_data_model.md | 数据模型 | 已完成 | 2026-06-18 |
-| 204 | 200_foundation/204_quality_plan.md | 测试和验收 | 已完成 | 2026-06-18 |
+| 202 | 200_foundation/202_project_structure.md | 项目目录结构 | 已完成 | 2026-06-19 |
+| 203 | 200_foundation/203_data_model.md | 数据模型 | 已完成 | 2026-06-19 |
+| 204 | 200_foundation/204_quality_plan.md | 测试和验收 | 已完成 | 2026-06-19 |
 | 205 | 200_foundation/205_build_release.md | 构建和发布 | 已完成 | 2026-06-18 |
-| 206 | 200_foundation/206_logging_system.md | 日志系统 | 已完成 | 2026-06-18 |
+| 206 | 200_foundation/206_logging_system.md | 日志系统 | 已完成 | 2026-06-19 |
 
 ## 300 功能文档
 
@@ -39,16 +39,17 @@
 | 301 | 300_features/301_enter_cinema_mode.md | 进入观影模式 | 已完成 | 2026-06-18 |
 | 302 | 300_features/302_exit_floating_button.md | 浮窗退出入口 | 已完成 | 2026-06-18 |
 | 303 | 300_features/303_exit_and_restore.md | 退出并恢复 | 已完成 | 2026-06-18 |
+| 304 | 300_features/304_settings_and_preferences.md | 设置与偏好 | 开发中 | 2026-06-19 |
 
 ## 900 项目记忆
 
 | 编号 | 文档 | 内容 | 状态 | 最后更新 |
 |------|------|------|------|----------|
-| 901 | 900_project_memory/901_feature_index.md | 功能索引 | 已完成 | 2026-06-18 |
-| 902 | 900_project_memory/902_implementation_index.md | 实现索引 | 已完成 | 2026-06-18 |
+| 901 | 900_project_memory/901_feature_index.md | 功能索引 | 已完成 | 2026-06-19 |
+| 902 | 900_project_memory/902_implementation_index.md | 实现索引 | 已完成 | 2026-06-19 |
 | 903 | 900_project_memory/903_abstraction_index.md | 待抽象索引 | 已完成 | 2026-06-18 |
 | 904 | 900_project_memory/904_issue_index.md | 问题记录 | 已完成 | 2026-06-18 |
-| 905 | 900_project_memory/905_ai_dev_checklist.md | AI 开发检查清单 | 已完成 | 2026-06-18 |
+| 905 | 900_project_memory/905_ai_dev_checklist.md | AI 开发检查清单 | 已完成 | 2026-06-19 |
 
 ## 更新规则
 

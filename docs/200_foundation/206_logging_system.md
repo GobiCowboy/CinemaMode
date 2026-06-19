@@ -66,6 +66,7 @@ print(error)
 |------|--------|--------|----------|
 | 应用启动 | `app` | `launch` | 成功 / 启动恢复 |
 | 状态栏菜单操作 | `menuBar` | `enter.tap` / `exit.tap` | 当前 phase / 入口动作 |
+| 状态栏菜单操作 | `menuBar` | `settings.tap` | 当前 phase / 入口动作 |
 | 进入观影模式开始 | `cinemaMode` | `enter.start` | 当前 phase |
 | 保存 presentation 快照 | `presentation` | `snapshot.capture` | 成功 / 失败 |
 | 显示系统 chrome 覆盖层 | `presentation` | `overlay.apply` / `chromeCover.show` | 成功 / 失败 / 前后台应用 / 覆盖层帧 / 当前前台焦点 |
@@ -77,6 +78,7 @@ print(error)
 | 关闭浮窗 | `floatingPanel` | `close` | 成功 / 已关闭 |
 | 异常恢复 | `cinemaMode` | `recover` | 原因 / 结果 |
 | 用户可见错误 | `app` | `userVisibleError` | 错误类型 / 简短提示 |
+| 偏好保存 | `preferences` | `save` | 更新的偏好 key |
 
 ## 7. 敏感信息规则
 
@@ -95,6 +97,7 @@ print(error)
 - 非敏感错误类型。
 - 浮窗 anchor，例如 `bottomRight`。
 - 屏幕数量、是否重新定位等非内容信息。
+- 偏好 key，例如 `preferredVolume`、`restoreBrightnessOnExit`。
 
 ## 8. 日志验收
 
@@ -113,3 +116,4 @@ print(error)
 |------|----------|------|
 | 2026-06-18 | 初始化日志系统设计。 | 文档阶段。 |
 | 2026-06-19 | 调整为覆盖层日志字段，移除 Space 锚点相关上下文。 | 对齐当前非激活实现。 |
+| 2026-06-19 | 增加设置页和偏好保存的日志字段。 | 对齐新需求。 |

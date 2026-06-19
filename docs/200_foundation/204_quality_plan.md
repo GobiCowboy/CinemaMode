@@ -25,6 +25,7 @@ log stream --predicate 'subsystem == "com.cinemamode.app"'
 | 301 | 进入观影模式 | 点击菜单栏图标后菜单栏和 Dock 隐藏，浮窗出现，状态进入 active | 未验收 |
 | 302 | 浮窗退出入口 | 鼠标静止 5%，移动 70%，悬停 100%，默认右下角且可拖动 | 未验收 |
 | 303 | 退出并恢复 | 点击浮窗后恢复进入前 presentation options，浮窗关闭 | 未验收 |
+| 304 | 设置与偏好 | 从菜单栏打开设置页，偏好可保存并回读 | 开发中 |
 
 状态：未验收 / 验收中 / 已通过 / 已退回
 
@@ -36,7 +37,7 @@ log stream --predicate 'subsystem == "com.cinemamode.app"'
 | `SystemPresentationController` | 保存快照、覆盖层显示、恢复调用 |
 | `FloatingPanelController` | show / close 幂等、拖动、屏幕变化后的定位策略 |
 | `PointerActivityMonitor` | 静止、移动、悬停状态到透明度的映射 |
-| `PreferencesStore` | 后续如引入则覆盖默认值、偏好读写、无敏感数据 |
+| `PreferencesStore` | 默认值、偏好读写、无敏感数据 |
 | `Logger` | module / action 必填，敏感字段过滤 |
 
 ## 4. 手动验收场景
@@ -53,6 +54,8 @@ log stream --predicate 'subsystem == "com.cinemamode.app"'
 | 重复点击 | 连续点击入口或退出 | 不创建多个浮窗，不重复破坏状态 |
 | 外接屏幕 | 切换主屏或拔插显示器 | 浮窗仍在可见屏幕右下角 |
 | 异常重启 | 观影中强制关闭后重开 | 优先恢复系统显示状态 |
+| 打开设置页 | 从菜单栏菜单打开 Settings... | 设置窗口出现，内容可编辑 |
+| 保存偏好 | 修改设置后重新打开 | 偏好仍保留 |
 
 ## 5. 发布前检查
 
@@ -67,6 +70,7 @@ log stream --predicate 'subsystem == "com.cinemamode.app"'
 | 退出入口始终可见 | 需要后续手动验收 | 未验收 |
 | 菜单栏入口清晰 | 需要后续手动验收 | 未验收 |
 | 异常恢复可用 | 单元测试 + 后续手动验收 | 部分通过 |
+| 设置页可打开 | 菜单栏点击 `Settings...` | 开发中 |
 
 ## 6. 缺陷记录
 
@@ -84,3 +88,4 @@ log stream --predicate 'subsystem == "com.cinemamode.app"'
 |------|----------|------|
 | 2026-06-18 | 初始化测试和验收计划。 | 文档阶段。 |
 | 2026-06-18 | 补充菜单栏图标入口与可拖动浮窗验收点。 | 产品形态更新。 |
+| 2026-06-19 | 增加设置页和偏好保存验收点。 | 对齐新需求。 |

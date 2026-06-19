@@ -24,14 +24,18 @@ project-root/
         CinemaModeApp.swift
         AppEnvironment.swift
         MenuBarStatusItemController.swift
+        SettingsWindowController.swift
       Views/
         MenuBarIconView.swift
         ExitFloatingView.swift
+        SettingsView.swift
       Services/
         SystemLogger.swift
         SystemPresentationController.swift
         FloatingPanelController.swift
         SystemPointerActivityMonitor.swift
+      Stores/
+        PreferencesStore.swift
       Models/
         CinemaModeState.swift
         PresentationSnapshot.swift
@@ -46,6 +50,8 @@ project-root/
         FloatingAnchor.swift
         PresentationSnapshot.swift
         FloatingWindowState.swift
+      Stores/
+        PreferencesStore.swift
       Support/
         AppError.swift
   CinemaModeTests/
@@ -60,6 +66,7 @@ project-root/
 | `Sources/CinemaMode/App/` | 应用入口和生命周期 | 只做启动、注入、状态栏入口和恢复编排 |
 | `Sources/CinemaMode/Views/` | SwiftUI 用户界面 | 不直接调用 AppKit 系统控制 |
 | `Sources/CinemaMode/Services/` | 平台实现和系统桥接 | 统一编排进入、退出、恢复 |
+| `Sources/CinemaModeCore/Stores/` | 偏好存储 | 保存轻量用户设置 |
 | `Sources/CinemaMode/Support/` | 错误类型等基础设施 | 不保存隐私内容 |
 | `Sources/CinemaMode/Models/` | 状态和数据模型 | 只放纯模型，不依赖 AppKit 窗口实例 |
 | `Sources/CinemaModeCore/Services/` | 共享业务服务 | 状态机与流程编排 |
@@ -101,3 +108,4 @@ project-root/
 | 2026-06-18 | 对齐当前 `Sources/` 目录结构。 | 代码路径更新。 |
 | 2026-06-19 | 移除 `MenuBarMenuView.swift`，状态栏入口改为原生状态菜单。 | 对齐最新实现。 |
 | 2026-06-19 | 移除 `AppDelegate.swift`，应用入口改为纯 AppKit 生命周期。 | 对齐最新实现。 |
+| 2026-06-19 | 增加设置页与偏好存储目录。 | 对齐新需求。 |

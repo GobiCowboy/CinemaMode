@@ -6,6 +6,7 @@ import CinemaModeCore
 final class MenuBarStatusItemController: NSObject, NSMenuDelegate {
     private let service: CinemaModeService
     private let logger: SystemLogger
+    private let settingsWindowController: SettingsWindowController
     private var statusItem: NSStatusItem?
     private var statusMenu: NSMenu?
     private var phaseObservation: AnyCancellable?
@@ -13,9 +14,10 @@ final class MenuBarStatusItemController: NSObject, NSMenuDelegate {
     private weak var enterItem: NSMenuItem?
     private weak var exitItem: NSMenuItem?
 
-    init(service: CinemaModeService, logger: SystemLogger) {
+    init(service: CinemaModeService, logger: SystemLogger, settingsWindowController: SettingsWindowController) {
         self.service = service
         self.logger = logger
+        self.settingsWindowController = settingsWindowController
         super.init()
     }
 
@@ -56,6 +58,10 @@ final class MenuBarStatusItemController: NSObject, NSMenuDelegate {
         statusItemLabel.isEnabled = false
         menu.addItem(statusItemLabel)
         menu.addItem(.separator())
+
+        let settingsItem = NSMenuItem(title: "Settings...", action: #selector(handleSettings), keyEquivalent: ",")
+        settingsItem.target = self
+        menu.addItem(settingsItem)
 
         let enterItem = NSMenuItem(title: "Enter Cinema Mode", action: #selector(handleEnterCinemaMode), keyEquivalent: "")
         enterItem.target = self
@@ -146,6 +152,20 @@ final class MenuBarStatusItemController: NSObject, NSMenuDelegate {
     @objc
     private func handleQuit() {
         NSApplication.shared.terminate(nil)
+    }
+
+    @objc
+    private func handleSettings() {
+        logger.info(
+            module: "menuBar",
+            action: "settings.tap",
+            message: "Settings requested from status menu",
+            context: ["phase": service.phase.rawValue]
+        )
+        statusMenu?.cancelTracking()
+        DispatchQueue.main.async { [weak self] in
+            self?.settingsWindowController.show()
+        }
     }
 
     private func refreshMenuState(for phase: CinemaModePhase) {
