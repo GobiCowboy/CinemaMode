@@ -53,16 +53,12 @@ public struct CinemaModeCopy {
     public var recoveringStatus: String { text(.recoveringStatus) }
     public var failedStatus: String { text(.failedStatus) }
     public var levelsSection: String { text(.levelsSection) }
-    public var placementSection: String { text(.placementSection) }
     public var languageSection: String { text(.languageSection) }
     public var volumeLabel: String { text(.volumeLabel) }
-    public var exitCornerLabel: String { text(.exitCornerLabel) }
-    public var bottomRightCorner: String { text(.bottomRightCorner) }
     public var languageSystem: String { text(.languageSystem) }
     public var languageChinese: String { text(.languageChinese) }
     public var languageEnglish: String { text(.languageEnglish) }
     public var levelsFootnote: String { text(.levelsFootnote) }
-    public var placementFootnote: String { text(.placementFootnote) }
     public var languageFootnote: String { text(.languageFootnote) }
 
     private enum Key {
@@ -79,16 +75,12 @@ public struct CinemaModeCopy {
         case recoveringStatus
         case failedStatus
         case levelsSection
-        case placementSection
         case languageSection
         case volumeLabel
-        case exitCornerLabel
-        case bottomRightCorner
         case languageSystem
         case languageChinese
         case languageEnglish
         case levelsFootnote
-        case placementFootnote
         case languageFootnote
     }
 
@@ -118,16 +110,12 @@ public struct CinemaModeCopy {
         case .recoveringStatus: return "Recovering"
         case .failedStatus: return "Needs recovery"
         case .levelsSection: return "Levels"
-        case .placementSection: return "Placement"
         case .languageSection: return "Language"
         case .volumeLabel: return "Volume"
-        case .exitCornerLabel: return "Exit corner"
-        case .bottomRightCorner: return "Bottom-right"
         case .languageSystem: return "System"
         case .languageChinese: return "Chinese"
         case .languageEnglish: return "English"
         case .levelsFootnote: return "This setting applies to the current system output volume."
-        case .placementFootnote: return "The app currently keeps the control anchored in the bottom-right corner."
         case .languageFootnote: return "System follows the current macOS language."
         }
     }
@@ -147,16 +135,12 @@ public struct CinemaModeCopy {
         case .recoveringStatus: return "恢复中"
         case .failedStatus: return "需要恢复"
         case .levelsSection: return "强度"
-        case .placementSection: return "位置"
         case .languageSection: return "语言"
         case .volumeLabel: return "音量"
-        case .exitCornerLabel: return "退出角落"
-        case .bottomRightCorner: return "右下角"
         case .languageSystem: return "系统"
         case .languageChinese: return "中文"
         case .languageEnglish: return "英文"
         case .levelsFootnote: return "这个设置会影响当前系统输出音量。"
-        case .placementFootnote: return "当前仍固定为右下角。"
         case .languageFootnote: return "系统会跟随当前 macOS 语言。"
         }
     }

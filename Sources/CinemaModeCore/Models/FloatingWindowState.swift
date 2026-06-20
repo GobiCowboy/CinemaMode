@@ -8,7 +8,7 @@ public struct FloatingWindowState: Equatable, Sendable {
     public var screenIdentifier: String?
 
     public init(
-        anchor: FloatingAnchor = .bottomRight,
+        anchor: FloatingAnchor = .topRight,
         opacity: Double = 0.05,
         isHovered: Bool = false,
         isVisible: Bool = false,
@@ -40,4 +40,3 @@ public struct FloatingWindowState: Equatable, Sendable {
         return copy
     }
 }
-

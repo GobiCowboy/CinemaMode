@@ -71,7 +71,7 @@
 | 字段 | 类型 | 必填 | 默认值 | 约束 | 说明 |
 |------|------|:----:|--------|------|------|
 | `screenID` | String? | 否 | nil | 可为空 | 浮窗所在屏幕标识 |
-| `anchor` | enum | 是 | `bottomRight` | MVP 固定右下角 | 浮窗锚点 |
+| `anchor` | enum | 是 | `topRight` | MVP 固定初始右上角 | 浮窗锚点 |
 | `opacity` | Double | 是 | 0.05 | 0.05...1.0 | 当前透明度 |
 | `isHovered` | Bool | 是 | false | 无 | 鼠标是否悬停 |
 | `isVisible` | Bool | 是 | false | 无 | 浮窗是否存在且可见 |
@@ -117,7 +117,6 @@
 | `preferredVolume` | Double | 是 | 65 | 0...100 | 进入观影模式时的目标音量 |
 | `preferredLanguage` | enum | 是 | `system` | `system / chinese / english` | 设置页和菜单栏文案语言 |
 | `restoreVolumeOnExit` | Bool | 是 | true | 无 | 退出时是否恢复原音量 |
-| `preferredAnchor` | enum | 是 | `bottomRight` | MVP 只使用右下角 | 现阶段仅保留单一锚点 |
 
 #### 生命周期
 

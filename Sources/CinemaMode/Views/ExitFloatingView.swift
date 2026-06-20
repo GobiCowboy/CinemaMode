@@ -136,7 +136,7 @@ private final class FloatingPanelEventView: NSView {
     }
 
     override func mouseDown(with event: NSEvent) {
-        let location = event.locationInWindow
+        let location = NSEvent.mouseLocation
         mouseDownLocation = location
         lastDragLocation = location
         didDrag = false
@@ -148,7 +148,7 @@ private final class FloatingPanelEventView: NSView {
     }
 
     override func mouseDragged(with event: NSEvent) {
-        let location = event.locationInWindow
+        let location = NSEvent.mouseLocation
         guard let lastDragLocation else {
             self.lastDragLocation = location
             return
@@ -176,7 +176,7 @@ private final class FloatingPanelEventView: NSView {
             didDrag = false
         }
 
-        let location = event.locationInWindow
+        let location = NSEvent.mouseLocation
         let downLocation = mouseDownLocation ?? location
         let distance = hypot(location.x - downLocation.x, location.y - downLocation.y)
         onPointerEvent("pointer.up", [

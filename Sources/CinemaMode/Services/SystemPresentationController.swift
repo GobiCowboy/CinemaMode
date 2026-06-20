@@ -67,7 +67,6 @@ final class SystemPresentationController: PresentationControlling {
 
     private func showChromeCovers() {
         hideChromeCovers()
-
         chromeCoverPanels = NSScreen.screens.flatMap { screen in
             coverFrames(for: screen).map { frame in
                 makeChromeCoverPanel(frame: frame)
@@ -118,21 +117,6 @@ final class SystemPresentationController: PresentationControlling {
             frames.append(CGRect(x: frame.minX, y: visibleFrame.maxY, width: frame.width, height: topHeight))
         }
 
-        let bottomHeight = max(0, visibleFrame.minY - frame.minY)
-        if bottomHeight > 0 {
-            frames.append(CGRect(x: frame.minX, y: frame.minY, width: frame.width, height: bottomHeight))
-        }
-
-        let leftWidth = max(0, visibleFrame.minX - frame.minX)
-        if leftWidth > 0 {
-            frames.append(CGRect(x: frame.minX, y: frame.minY, width: leftWidth, height: frame.height))
-        }
-
-        let rightWidth = max(0, frame.maxX - visibleFrame.maxX)
-        if rightWidth > 0 {
-            frames.append(CGRect(x: visibleFrame.maxX, y: frame.minY, width: rightWidth, height: frame.height))
-        }
-
         return frames
     }
 
@@ -174,7 +158,6 @@ final class SystemPresentationController: PresentationControlling {
                 self?.logPresentationDiagnostics(stage: "didResignActive")
             }
         })
-
         observers.append(NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.didActivateApplicationNotification,
             object: nil,

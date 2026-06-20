@@ -219,4 +219,5 @@ final class MenuBarStatusItemController: NSObject, NSMenuDelegate {
             return copy.failedStatus
         }
     }
+
 }

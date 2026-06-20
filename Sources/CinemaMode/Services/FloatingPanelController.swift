@@ -128,18 +128,19 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
         }
 
         let currentFrame = panel.frame
-        let visibleFrame = panel.screen?.visibleFrame ?? NSScreen.main?.visibleFrame ?? NSScreen.screens.first?.visibleFrame ?? .zero
-        let minX = visibleFrame.minX
-        let maxX = visibleFrame.maxX - currentFrame.width
-        let minY = visibleFrame.minY
-        let maxY = visibleFrame.maxY - currentFrame.height
-
         let origin = CGPoint(
-            x: min(max(currentFrame.origin.x + delta.width, minX), maxX),
-            y: min(max(currentFrame.origin.y + delta.height, minY), maxY)
+            x: currentFrame.origin.x + delta.width,
+            y: currentFrame.origin.y + delta.height
         )
 
         panel.setFrameOrigin(origin)
+
+        logger.info(
+            module: "floatingPanel",
+            action: "reposition",
+            message: "Exit floating panel repositioned",
+            context: ["anchor": currentState.anchor.rawValue]
+        )
     }
 
     private func positionPanel() {
@@ -152,7 +153,7 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
         let margin: CGFloat = 22
         let origin = CGPoint(
             x: visibleFrame.maxX - size.width - margin,
-            y: visibleFrame.minY + margin
+            y: visibleFrame.maxY - size.height - margin
         )
 
         panel.setFrame(CGRect(origin: origin, size: size), display: true)

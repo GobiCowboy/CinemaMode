@@ -36,19 +36,9 @@ struct SettingsView: View {
                 Text(copy.levelsFootnote)
             }
 
-            Section {
-                LabeledContent(copy.exitCornerLabel) {
-                    Text(copy.bottomRightCorner)
-                        .foregroundStyle(.secondary)
-                }
-            } header: {
-                Text(copy.placementSection)
-            } footer: {
-                Text(copy.placementFootnote)
-            }
         }
         .formStyle(.grouped)
         .padding()
-        .frame(minWidth: 460, minHeight: 420)
+        .frame(minWidth: 460, minHeight: 320)
     }
 }

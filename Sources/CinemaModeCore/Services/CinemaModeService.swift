@@ -33,12 +33,12 @@ public final class CinemaModeService: ObservableObject {
         self.logger = logger
     }
 
-    public func enter(anchor: FloatingAnchor = .bottomRight) {
+    public func enter() {
         if phase == .failed {
             recoverIfNeeded()
         }
 
-        let effectiveAnchor = preferencesStore.preferredAnchor
+        let effectiveAnchor = FloatingAnchor.topRight
 
         guard phase == .idle else {
             logger.warn(
@@ -96,7 +96,7 @@ public final class CinemaModeService: ObservableObject {
                 action: "enter.success",
                 message: "Cinema mode entered",
                 context: [
-                    "anchor": preferencesStore.preferredAnchor.rawValue,
+                    "anchor": effectiveAnchor.rawValue,
                     "preferredVolume": "\(Int(preferencesStore.preferredVolume))"
                 ]
             )

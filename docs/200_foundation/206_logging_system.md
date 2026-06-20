@@ -95,7 +95,7 @@ print(error)
 - phase、module、action、系统 options raw value、frontmost app 名称、覆盖层 frame、focus target 等脱敏调试字段。
 - 功能状态，例如 `idle`、`active`、`recovering`。
 - 非敏感错误类型。
-- 浮窗 anchor，例如 `bottomRight`。
+- 浮窗 anchor，例如 `topRight`。
 - 屏幕数量、是否重新定位等非内容信息。
 - 偏好 key，例如 `preferredVolume`、`restoreVolumeOnExit`。
 

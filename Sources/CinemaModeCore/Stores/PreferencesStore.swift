@@ -15,10 +15,6 @@ public final class PreferencesStore: ObservableObject {
         didSet { defaults.set(preferredLanguageRawValue, forKey: Keys.preferredLanguage) }
     }
 
-    @Published public var preferredAnchorRawValue: String {
-        didSet { defaults.set(preferredAnchorRawValue, forKey: Keys.preferredAnchor) }
-    }
-
     private let defaults: UserDefaults
 
     public init(defaults: UserDefaults = .standard) {
@@ -27,22 +23,16 @@ public final class PreferencesStore: ObservableObject {
         defaults.register(defaults: [
             Keys.preferredVolume: 65.0,
             Keys.restoreVolumeOnExit: true,
-            Keys.preferredLanguage: AppLanguage.system.rawValue,
-            Keys.preferredAnchor: FloatingAnchor.bottomRight.rawValue
+            Keys.preferredLanguage: AppLanguage.system.rawValue
         ])
 
         preferredVolume = defaults.double(forKey: Keys.preferredVolume)
         restoreVolumeOnExit = defaults.bool(forKey: Keys.restoreVolumeOnExit)
         preferredLanguageRawValue = defaults.string(forKey: Keys.preferredLanguage) ?? AppLanguage.system.rawValue
-        preferredAnchorRawValue = defaults.string(forKey: Keys.preferredAnchor) ?? FloatingAnchor.bottomRight.rawValue
     }
 
     public var preferredLanguage: AppLanguage {
         AppLanguage.from(rawValue: preferredLanguageRawValue)
-    }
-
-    public var preferredAnchor: FloatingAnchor {
-        FloatingAnchor(rawValue: preferredAnchorRawValue) ?? .bottomRight
     }
 
     public var preferredVolumeFraction: Double {
@@ -53,6 +43,5 @@ public final class PreferencesStore: ObservableObject {
         static let preferredVolume = "preferences.preferredVolume"
         static let restoreVolumeOnExit = "preferences.restoreVolumeOnExit"
         static let preferredLanguage = "preferences.preferredLanguage"
-        static let preferredAnchor = "preferences.preferredAnchor"
     }
 }
