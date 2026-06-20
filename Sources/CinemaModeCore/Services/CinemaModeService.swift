@@ -13,6 +13,8 @@ public final class CinemaModeService: ObservableObject {
     private let pointerMonitor: any PointerActivityMonitoring
     private let preferencesStore: PreferencesStore
     private let logger: any CinemaModeLogging
+    private let feedbackPresenter: (any CinemaModeFeedbackPresenting)?
+    private let supportsDockAutoHide: Bool
 
     private var snapshot: PresentationSnapshot?
     private var environmentSnapshot: EnvironmentPreferencesSnapshot?
@@ -23,7 +25,9 @@ public final class CinemaModeService: ObservableObject {
         floatingPanelController: any FloatingPanelControlling,
         pointerMonitor: any PointerActivityMonitoring,
         preferencesStore: PreferencesStore,
-        logger: any CinemaModeLogging = NullCinemaModeLogger()
+        logger: any CinemaModeLogging = NullCinemaModeLogger(),
+        feedbackPresenter: (any CinemaModeFeedbackPresenting)? = nil,
+        supportsDockAutoHide: Bool = false
     ) {
         self.presentationController = presentationController
         self.environmentPreferencesController = environmentPreferencesController
@@ -31,6 +35,8 @@ public final class CinemaModeService: ObservableObject {
         self.pointerMonitor = pointerMonitor
         self.preferencesStore = preferencesStore
         self.logger = logger
+        self.feedbackPresenter = feedbackPresenter
+        self.supportsDockAutoHide = supportsDockAutoHide
     }
 
     public func enter() {
@@ -93,6 +99,7 @@ public final class CinemaModeService: ObservableObject {
 
             enteredAt = Date()
             phase = .active
+            presentEnterFeedback()
 
             logger.info(
                 module: "cinemaMode",
@@ -131,6 +138,7 @@ public final class CinemaModeService: ObservableObject {
         floatingPanelController.hide()
 
         guard let currentSnapshot = snapshot else {
+            presentExitFeedback()
             phase = .idle
             enteredAt = nil
             environmentSnapshot = nil
@@ -153,6 +161,7 @@ public final class CinemaModeService: ObservableObject {
                     after: presentationController.transitionDelay(for: .exitEnvironment)
                 )
             }
+            presentExitFeedback()
             snapshot = nil
             environmentSnapshot = nil
             enteredAt = nil
@@ -210,6 +219,7 @@ public final class CinemaModeService: ObservableObject {
                         after: presentationController.transitionDelay(for: .exitEnvironment)
                     )
                 }
+                presentExitFeedback()
                 snapshot = nil
                 self.environmentSnapshot = nil
             } catch {
@@ -250,6 +260,34 @@ public final class CinemaModeService: ObservableObject {
 
     private func stopRuntimeMonitors() {
         pointerMonitor.stop()
+    }
+
+    private func presentEnterFeedback() {
+        let copy = CinemaModeCopy(language: preferencesStore.preferredLanguage)
+        var items: [String] = [
+            copy.feedbackMenuBarHidden,
+            copy.feedbackVolumeAdjusted(Int(preferencesStore.preferredVolume.rounded()))
+        ]
+
+        if supportsDockAutoHide && preferencesStore.temporarilyAutoHideDock {
+            items.append(copy.feedbackDockHidden)
+        }
+
+        feedbackPresenter?.present(title: copy.feedbackActiveTitle, items: items)
+    }
+
+    private func presentExitFeedback() {
+        let copy = CinemaModeCopy(language: preferencesStore.preferredLanguage)
+        var items: [String] = [
+            copy.feedbackMenuBarRestored,
+            copy.feedbackVolumeRestored
+        ]
+
+        if supportsDockAutoHide {
+            items.append(copy.feedbackDockRestored)
+        }
+
+        feedbackPresenter?.present(title: copy.feedbackExitTitle, items: items)
     }
 
     private func handleEnterFailure(_ error: Error) {

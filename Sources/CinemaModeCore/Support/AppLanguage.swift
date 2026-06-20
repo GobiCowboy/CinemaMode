@@ -59,6 +59,8 @@ public struct CinemaModeCopy {
     public var floatingPanelSizeLabel: String { text(.floatingPanelSizeLabel) }
     public var githubFeaturesSection: String { text(.githubFeaturesSection) }
     public var dockAutoHideLabel: String { text(.dockAutoHideLabel) }
+    public var feedbackActiveTitle: String { text(.feedbackActiveTitle) }
+    public var feedbackExitTitle: String { text(.feedbackExitTitle) }
     public var languageSystem: String { text(.languageSystem) }
     public var languageChinese: String { text(.languageChinese) }
     public var languageEnglish: String { text(.languageEnglish) }
@@ -66,6 +68,14 @@ public struct CinemaModeCopy {
     public var languageFootnote: String { text(.languageFootnote) }
     public var floatingPanelFootnote: String { text(.floatingPanelFootnote) }
     public var githubFeaturesFootnote: String { text(.githubFeaturesFootnote) }
+    public var feedbackMenuBarHidden: String { text(.feedbackMenuBarHidden) }
+    public func feedbackVolumeAdjusted(_ volume: Int) -> String {
+        text(.feedbackVolumeAdjusted(volume))
+    }
+    public var feedbackDockHidden: String { text(.feedbackDockHidden) }
+    public var feedbackMenuBarRestored: String { text(.feedbackMenuBarRestored) }
+    public var feedbackVolumeRestored: String { text(.feedbackVolumeRestored) }
+    public var feedbackDockRestored: String { text(.feedbackDockRestored) }
 
     private enum Key {
         case appTitle
@@ -87,6 +97,8 @@ public struct CinemaModeCopy {
         case floatingPanelSizeLabel
         case githubFeaturesSection
         case dockAutoHideLabel
+        case feedbackActiveTitle
+        case feedbackExitTitle
         case languageSystem
         case languageChinese
         case languageEnglish
@@ -94,6 +106,12 @@ public struct CinemaModeCopy {
         case languageFootnote
         case floatingPanelFootnote
         case githubFeaturesFootnote
+        case feedbackMenuBarHidden
+        case feedbackVolumeAdjusted(Int)
+        case feedbackDockHidden
+        case feedbackMenuBarRestored
+        case feedbackVolumeRestored
+        case feedbackDockRestored
     }
 
     private func text(_ key: Key) -> String {
@@ -128,6 +146,8 @@ public struct CinemaModeCopy {
         case .floatingPanelSizeLabel: return "Size"
         case .githubFeaturesSection: return "GitHub Features"
         case .dockAutoHideLabel: return "Temporarily auto-hide Dock"
+        case .feedbackActiveTitle: return "Cinema mode active"
+        case .feedbackExitTitle: return "Cinema mode exited"
         case .languageSystem: return "System"
         case .languageChinese: return "Chinese"
         case .languageEnglish: return "English"
@@ -135,6 +155,12 @@ public struct CinemaModeCopy {
         case .languageFootnote: return "System follows the current macOS language."
         case .floatingPanelFootnote: return "The floating control remembers its last position and stays inside the current screen."
         case .githubFeaturesFootnote: return "GitHub edition only. The app restores your original Dock setting when cinema mode exits."
+        case .feedbackMenuBarHidden: return "Menu bar hidden"
+        case .feedbackVolumeAdjusted(let volume): return "Volume adjusted to \(volume)%"
+        case .feedbackDockHidden: return "Dock hidden"
+        case .feedbackMenuBarRestored: return "Menu bar restored"
+        case .feedbackVolumeRestored: return "Volume restored"
+        case .feedbackDockRestored: return "Dock restored"
         }
     }
 
@@ -159,6 +185,8 @@ public struct CinemaModeCopy {
         case .floatingPanelSizeLabel: return "大小"
         case .githubFeaturesSection: return "GitHub 版功能"
         case .dockAutoHideLabel: return "观影时临时自动隐藏 Dock"
+        case .feedbackActiveTitle: return "观影模式已开启"
+        case .feedbackExitTitle: return "观影模式已退出"
         case .languageSystem: return "系统"
         case .languageChinese: return "中文"
         case .languageEnglish: return "英文"
@@ -166,6 +194,12 @@ public struct CinemaModeCopy {
         case .languageFootnote: return "系统会跟随当前 macOS 语言。"
         case .floatingPanelFootnote: return "浮窗会记住上次拖拽位置，并始终限制在当前屏幕可见范围内。"
         case .githubFeaturesFootnote: return "仅 GitHub 分发版提供。退出观影模式后会自动恢复用户原来的 Dock 设置。"
+        case .feedbackMenuBarHidden: return "菜单栏已隐藏"
+        case .feedbackVolumeAdjusted(let volume): return "音量已调整到 \(volume)%"
+        case .feedbackDockHidden: return "Dock 栏已隐藏"
+        case .feedbackMenuBarRestored: return "菜单栏已恢复"
+        case .feedbackVolumeRestored: return "音量已恢复"
+        case .feedbackDockRestored: return "Dock 栏已恢复"
         }
     }
 }

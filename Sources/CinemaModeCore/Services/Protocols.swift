@@ -29,6 +29,11 @@ public protocol EnvironmentPreferencesControlling: Sendable {
     func restore(from snapshot: EnvironmentPreferencesSnapshot, preferences: PreferencesStore, after delay: TimeInterval) throws
 }
 
+@MainActor
+public protocol CinemaModeFeedbackPresenting: AnyObject {
+    func present(title: String, items: [String])
+}
+
 public enum PresentationTransitionStage: Sendable {
     case enterEnvironment
     case exitEnvironment

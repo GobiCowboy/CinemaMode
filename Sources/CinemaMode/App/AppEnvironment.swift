@@ -8,6 +8,7 @@ final class AppEnvironment: ObservableObject {
     let presentationController: SystemPresentationController
     let environmentPreferencesController: SystemEnvironmentPreferencesController
     let floatingPanelController: FloatingPanelController
+    let feedbackBannerController: SystemFeedbackBannerController
     let preferencesStore: PreferencesStore
     let settingsWindowController: SettingsWindowController
     let menuBarStatusItemController: MenuBarStatusItemController
@@ -21,6 +22,7 @@ final class AppEnvironment: ObservableObject {
         let presentationController = SystemPresentationController(logger: logger)
         let environmentPreferencesController = SystemEnvironmentPreferencesController(logger: logger, edition: edition)
         let floatingPanelController = FloatingPanelController(logger: logger)
+        let feedbackBannerController = SystemFeedbackBannerController(logger: logger)
         let settingsWindowController = SettingsWindowController(preferences: preferencesStore, edition: edition)
         let pointerMonitor = SystemPointerActivityMonitor(logger: logger)
 
@@ -29,6 +31,7 @@ final class AppEnvironment: ObservableObject {
         self.presentationController = presentationController
         self.environmentPreferencesController = environmentPreferencesController
         self.floatingPanelController = floatingPanelController
+        self.feedbackBannerController = feedbackBannerController
         self.preferencesStore = preferencesStore
         self.settingsWindowController = settingsWindowController
         self.pointerMonitor = pointerMonitor
@@ -38,7 +41,9 @@ final class AppEnvironment: ObservableObject {
             floatingPanelController: floatingPanelController,
             pointerMonitor: pointerMonitor,
             preferencesStore: preferencesStore,
-            logger: logger
+            logger: logger,
+            feedbackPresenter: feedbackBannerController,
+            supportsDockAutoHide: edition.supportsDockAutoHide
         )
         self.menuBarStatusItemController = MenuBarStatusItemController(
             service: service,
