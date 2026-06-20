@@ -71,6 +71,7 @@ print(error)
 | 保存 presentation 快照 | `presentation` | `snapshot.capture` | 成功 / 失败 |
 | 显示系统 chrome 覆盖层 | `presentation` | `overlay.apply` / `chromeCover.show` | 成功 / 失败 / 前后台应用 / 覆盖层帧 / 当前前台焦点 |
 | 显示浮窗 | `floatingPanel` | `show` | 成功 / 失败 |
+| 显示结果反馈弹窗 | `feedback` | `banner.show` | 成功 / 条目数量 |
 | 鼠标状态变化 | `pointer` | `visibility.change` | debug 级别，状态变化即可 |
 | 退出开始 | `cinemaMode` | `exit.start` | 当前 phase |
 | 恢复 presentation options | `presentation` | `options.restore` | 成功 / 失败 / 重试次数 |
@@ -98,6 +99,7 @@ print(error)
 - 浮窗 anchor，例如 `topRight`。
 - 屏幕数量、是否重新定位等非内容信息。
 - 偏好 key，例如 `preferredVolume`、`restoreVolumeOnExit`。
+- 结果反馈弹窗的展示与条目数量，不记录具体观看内容。
 
 ## 8. 日志验收
 
@@ -117,3 +119,4 @@ print(error)
 | 2026-06-18 | 初始化日志系统设计。 | 文档阶段。 |
 | 2026-06-19 | 调整为覆盖层日志字段，移除 Space 锚点相关上下文。 | 对齐当前非激活实现。 |
 | 2026-06-19 | 增加设置页和偏好保存的日志字段。 | 对齐新需求。 |
+| 2026-06-21 | 增加结果反馈弹窗的日志字段。 | 对齐最新交互。 |

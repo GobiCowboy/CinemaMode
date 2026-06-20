@@ -11,6 +11,7 @@
 | 系统 chrome 覆盖层控制 | 301 | 301, 303 | `Sources/CinemaMode/Services/SystemPresentationController.swift` | 是 | 保存原始状态并显示覆盖层，退出时恢复 |
 | 退出浮窗控制 | 302 | 302, 303 | `Sources/CinemaMode/Services/FloatingPanelController.swift` | 是 | 创建、定位、拖动、关闭浮窗 |
 | 鼠标活动监听 | 302 | 302 | `Sources/CinemaMode/Services/SystemPointerActivityMonitor.swift` | 是 | 将鼠标状态映射到透明度 |
+| 结果反馈弹窗 | 301 | 301, 303 | `Sources/CinemaMode/Services/SystemFeedbackBannerController.swift` | 否 | 进入和退出后的短暂结果提示，按 edition 调整内容 |
 
 ## 记录规则
 
@@ -42,3 +43,4 @@
 | 2026-06-18 | 完成核心实现并更新真实文件路径。 |
 | 2026-06-18 | 补充菜单栏入口和浮窗拖动能力。 |
 | 2026-06-19 | 补充设置窗口与偏好存储的真实实现路径。 |
+| 2026-06-21 | 补充结果反馈弹窗实现路径。 |

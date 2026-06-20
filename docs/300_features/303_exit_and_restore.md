@@ -18,6 +18,7 @@
 - 停止鼠标活动监听。
 - 关闭退出浮窗。
 - 将状态机回到 idle。
+- 退出完成后显示一次短暂结果反馈，说明菜单栏和音量已恢复；GitHub 版还会说明 Dock 已恢复。
 - 失败时优先恢复系统显示状态，避免用户被困住。
 
 ## 3. 用户流程
@@ -29,6 +30,7 @@
 5. 系统恢复进入前 presentation options。
 6. 系统停止鼠标监听并关闭浮窗。
 7. 系统回到 idle。
+8. 系统短暂显示结果反馈弹窗。
 
 ## 4. 页面与交互
 
@@ -77,6 +79,7 @@
 | 恢复成功 | info | `presentation` | `options.restore` | Presentation options restored | `restoreAttemptCount` |
 | 覆盖层隐藏 | info | `presentation` | `chromeCover.hide` | System chrome cover panels hidden | `count` |
 | 浮窗关闭 | info | `floatingPanel` | `close` | Exit floating panel closed | 无 |
+| 结果反馈显示 | info | `feedback` | `banner.show` | Cinema mode feedback banner shown | `itemCount` |
 | 退出成功 | info | `cinemaMode` | `exit.success` | Cinema mode exited | `duration` |
 | 重复退出 | warn | `cinemaMode` | `exit.ignored` | Exit ignored because mode is not active | `phase` |
 | 异常恢复 | warn | `cinemaMode` | `recover` | Recovering inconsistent cinema mode state | `reason` |
@@ -129,3 +132,4 @@
 |------|----------|----------|
 | 2026-06-18 | 初始化退出并恢复功能文档。 | 本文件、000、901 |
 | 2026-06-19 | 改为覆盖层恢复路径，移除旧的激活锚点叙述。 | 本文件、103、904 |
+| 2026-06-21 | 补充退出后的结果反馈弹窗说明。 | 本文件、101、102、203、206 |

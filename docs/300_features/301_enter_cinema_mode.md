@@ -18,6 +18,7 @@
 - 通过系统 chrome 覆盖层呈现菜单栏和 Dock 隐藏效果。
 - 保存进入前系统显示状态，方便退出时恢复。
 - 创建退出浮窗，让用户不会被困住。
+- 进入完成后显示一次短暂结果反馈，帮助用户确认菜单栏、音量和 Dock 状态。
 - 不要求用户理解权限、系统设置或快捷键。
 
 ## 3. 用户流程
@@ -31,6 +32,7 @@
 7. 系统显示退出浮窗。
 8. 系统尽量保持当前播放器或浏览器的前台状态。
 9. 用户留在当前桌面，同时看到菜单栏和 Dock 被覆盖，屏幕进入低干扰状态。
+10. 系统短暂显示结果反馈弹窗。
 
 ## 4. 页面与交互
 
@@ -81,6 +83,7 @@
 | 覆盖层显示成功 | info | `presentation` | `overlay.apply` | Cinema overlay applied without activating the app | `frontmostBefore`, `frontmostAfter`, `focusTarget`, `restoredExternalFocus`, `presentationOptionsRawValue` |
 | 覆盖层面板显示 | info | `presentation` | `chromeCover.show` | System chrome cover panels shown | `count`, `frames` |
 | 浮窗显示成功 | info | `floatingPanel` | `show` | Exit floating panel shown | `anchor` |
+| 结果反馈显示 | info | `feedback` | `banner.show` | Cinema mode feedback banner shown | `itemCount` |
 | 重复进入 | warn | `cinemaMode` | `enter.ignored` | Enter ignored because mode is already active | `phase` |
 | 进入失败 | error | `cinemaMode` | `enter.failed` | Failed to enter cinema mode | `errorType` |
 
@@ -132,3 +135,4 @@
 |------|----------|----------|
 | 2026-06-18 | 补充状态栏入口描述与真实代码路径。 | 本文件、000、901 |
 | 2026-06-19 | 改为非激活系统 chrome 覆盖层，避免抢占播放器焦点。 | 本文件、103、206、904 |
+| 2026-06-21 | 补充进入后的结果反馈弹窗说明。 | 本文件、101、102、203、206 |

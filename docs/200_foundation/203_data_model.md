@@ -9,6 +9,7 @@
 | `FloatingWindowState` | 描述退出浮窗位置、透明度和 hover 状态 | 302, 303 |
 | `PointerVisibilityState` | 描述鼠标静止、移动、悬停状态 | 302 |
 | `CinemaModePreferences` | 保存非敏感用户偏好 | 304 |
+| `FeedbackBanner` | 描述进入/退出后的短暂结果反馈内容 | 301, 303 |
 | `LogEvent` | 统一日志事件结构 | 全局 |
 
 ---
@@ -125,6 +126,30 @@
 | 创建 | `PreferencesStore` | 首次启动默认生成 |
 | 更新 | `PreferencesStore` | 偏好变化时更新 |
 | 删除 | 不主动删除 | 用户卸载或清除应用数据 |
+
+### FeedbackBanner
+
+#### 字段
+
+| 字段 | 类型 | 必填 | 默认值 | 约束 | 说明 |
+|------|------|:----:|--------|------|------|
+| `title` | String | 是 | 无 | 简短 | 进入或退出后的结果标题 |
+| `items` | [String] | 是 | 无 | 1..3 条 | 反馈内容，按 edition 决定是否包含 Dock 文案 |
+| `displayDuration` | TimeInterval | 是 | 2.4 | 正值 | 自动淡出的显示时长 |
+
+#### 关系
+
+| 关联实体 | 关系类型 | 说明 |
+|----------|:--------:|------|
+| `CinemaModeState` | 一对一 | 进入和退出后由状态机触发 |
+
+#### 生命周期
+
+| 阶段 | 位置 | 说明 |
+|------|------|------|
+| 创建 | `CinemaModeService.enter()` / `exit()` | 状态切换完成后触发 |
+| 更新 | 不更新 | 只负责短暂展示 |
+| 删除 | `SystemFeedbackBannerController` 自动回收 | 超时淡出后关闭 |
 
 ### LogEvent
 
