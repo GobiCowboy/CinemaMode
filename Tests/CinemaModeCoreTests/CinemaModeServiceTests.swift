@@ -117,19 +117,23 @@ final class EnvironmentPreferencesControllerSpy: EnvironmentPreferencesControlli
     var captureCount = 0
     var applyCount = 0
     var restoreCount = 0
-    var snapshot = EnvironmentPreferencesSnapshot(outputVolume: 0.5)
+    var snapshot = EnvironmentPreferencesSnapshot(outputVolume: 0.5, dockAutoHideEnabled: false)
+    var lastApplyDelay: TimeInterval?
+    var lastRestoreDelay: TimeInterval?
 
     func captureSnapshot() throws -> EnvironmentPreferencesSnapshot {
         captureCount += 1
         return snapshot
     }
 
-    func applyPreferences(from preferences: PreferencesStore) throws {
+    func applyPreferences(from preferences: PreferencesStore, after delay: TimeInterval) throws {
         applyCount += 1
+        lastApplyDelay = delay
     }
 
-    func restore(from snapshot: EnvironmentPreferencesSnapshot, preferences: PreferencesStore) throws {
+    func restore(from snapshot: EnvironmentPreferencesSnapshot, preferences: PreferencesStore, after delay: TimeInterval) throws {
         restoreCount += 1
+        lastRestoreDelay = delay
         self.snapshot = snapshot
     }
 }
@@ -154,6 +158,15 @@ final class PresentationControllerSpy: PresentationControlling {
     func restore(from snapshot: PresentationSnapshot) throws {
         restoreCount += 1
         self.snapshot = snapshot
+    }
+
+    func transitionDelay(for stage: PresentationTransitionStage) -> TimeInterval {
+        switch stage {
+        case .enterEnvironment:
+            return 0.12
+        case .exitEnvironment:
+            return 0.12
+        }
     }
 }
 

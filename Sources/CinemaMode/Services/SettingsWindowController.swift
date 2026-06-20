@@ -5,13 +5,19 @@ import CinemaModeCore
 @MainActor
 final class SettingsWindowController {
     private let preferences: PreferencesStore
+    private let edition: AppEdition
     private var window: NSWindow?
 
-    init(preferences: PreferencesStore) {
+    init(preferences: PreferencesStore, edition: AppEdition) {
         self.preferences = preferences
+        self.edition = edition
     }
 
     func show() {
+        openSettings()
+    }
+
+    func openSettings() {
         let copy = CinemaModeCopy(language: preferences.preferredLanguage)
         if let window {
             window.title = copy.settingsTitle
@@ -20,7 +26,7 @@ final class SettingsWindowController {
             return
         }
 
-        let contentView = SettingsView(preferences: preferences)
+        let contentView = SettingsView(preferences: preferences, edition: edition)
         let hostingController = NSHostingController(rootView: contentView)
         let window = NSWindow(
             contentViewController: hostingController

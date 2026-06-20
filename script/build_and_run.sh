@@ -5,6 +5,7 @@ MODE="${1:-run}"
 APP_NAME="CinemaMode"
 BUNDLE_ID="com.cinemamode.app"
 MIN_SYSTEM_VERSION="14.0"
+APP_EDITION="${CINEMA_MODE_EDITION:-appstore}"
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DIST_DIR="$ROOT_DIR/dist"
@@ -55,6 +56,8 @@ cat >"$INFO_PLIST" <<PLIST
   </array>
   <key>CFBundleVersion</key>
   <string>1</string>
+  <key>CinemaModeEdition</key>
+  <string>$APP_EDITION</string>
   <key>LSMinimumSystemVersion</key>
   <string>$MIN_SYSTEM_VERSION</string>
   <key>LSUIElement</key>

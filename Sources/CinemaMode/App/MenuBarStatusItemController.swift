@@ -180,7 +180,7 @@ final class MenuBarStatusItemController: NSObject, NSMenuDelegate {
         )
         statusMenu?.cancelTracking()
         DispatchQueue.main.async { [weak self] in
-            self?.settingsWindowController.show()
+            self?.settingsWindowController.openSettings()
         }
     }
 

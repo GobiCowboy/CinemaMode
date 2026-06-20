@@ -4,6 +4,12 @@ import CinemaModeCore
 
 @MainActor
 final class SystemPresentationController: PresentationControlling {
+    private enum Transition {
+        static let coverFadeDuration: TimeInterval = 0.18
+        static let environmentDelay: TimeInterval = 0.12
+        static let coverTargetAlpha: CGFloat = 0.96
+    }
+
     private let logger: SystemLogger
     private var chromeCoverPanels: [NSPanel] = []
     private var observers: [NSObjectProtocol] = []
@@ -25,6 +31,13 @@ final class SystemPresentationController: PresentationControlling {
             context: ["optionsRawValue": "\(options)"]
         )
         return snapshot
+    }
+
+    func transitionDelay(for stage: PresentationTransitionStage) -> TimeInterval {
+        switch stage {
+        case .enterEnvironment, .exitEnvironment:
+            return Transition.environmentDelay
+        }
     }
 
     func applyCinemaMode(using snapshot: PresentationSnapshot) throws {
@@ -74,8 +87,10 @@ final class SystemPresentationController: PresentationControlling {
         }
 
         chromeCoverPanels.forEach { panel in
+            panel.alphaValue = 0
             panel.orderFrontRegardless()
         }
+        animateChromeCovers(to: Transition.coverTargetAlpha)
 
         logger.info(
             module: "presentation",
@@ -94,10 +109,17 @@ final class SystemPresentationController: PresentationControlling {
         }
 
         let count = chromeCoverPanels.count
-        chromeCoverPanels.forEach { panel in
-            panel.orderOut(nil)
-        }
+        let panels = chromeCoverPanels
         chromeCoverPanels = []
+        animateChromeCovers(
+            panels,
+            to: 0,
+            completion: {
+                panels.forEach { panel in
+                    panel.orderOut(nil)
+                }
+            }
+        )
 
         logger.info(
             module: "presentation",
@@ -136,6 +158,29 @@ final class SystemPresentationController: PresentationControlling {
         panel.hasShadow = false
         panel.ignoresMouseEvents = false
         return panel
+    }
+
+    private func animateChromeCovers(to alpha: CGFloat) {
+        animateChromeCovers(chromeCoverPanels, to: alpha, completion: nil)
+    }
+
+    private func animateChromeCovers(_ panels: [NSPanel], to alpha: CGFloat, completion: (@MainActor @Sendable () -> Void)?) {
+        guard !panels.isEmpty else {
+            completion?()
+            return
+        }
+
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = Transition.coverFadeDuration
+            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            panels.forEach { panel in
+                panel.animator().alphaValue = alpha
+            }
+        } completionHandler: {
+            Task { @MainActor in
+                completion?()
+            }
+        }
     }
 
     private func observeApplicationActivation() {

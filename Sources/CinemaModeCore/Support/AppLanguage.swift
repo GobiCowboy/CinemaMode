@@ -55,11 +55,17 @@ public struct CinemaModeCopy {
     public var levelsSection: String { text(.levelsSection) }
     public var languageSection: String { text(.languageSection) }
     public var volumeLabel: String { text(.volumeLabel) }
+    public var floatingPanelSection: String { text(.floatingPanelSection) }
+    public var floatingPanelSizeLabel: String { text(.floatingPanelSizeLabel) }
+    public var githubFeaturesSection: String { text(.githubFeaturesSection) }
+    public var dockAutoHideLabel: String { text(.dockAutoHideLabel) }
     public var languageSystem: String { text(.languageSystem) }
     public var languageChinese: String { text(.languageChinese) }
     public var languageEnglish: String { text(.languageEnglish) }
     public var levelsFootnote: String { text(.levelsFootnote) }
     public var languageFootnote: String { text(.languageFootnote) }
+    public var floatingPanelFootnote: String { text(.floatingPanelFootnote) }
+    public var githubFeaturesFootnote: String { text(.githubFeaturesFootnote) }
 
     private enum Key {
         case appTitle
@@ -77,11 +83,17 @@ public struct CinemaModeCopy {
         case levelsSection
         case languageSection
         case volumeLabel
+        case floatingPanelSection
+        case floatingPanelSizeLabel
+        case githubFeaturesSection
+        case dockAutoHideLabel
         case languageSystem
         case languageChinese
         case languageEnglish
         case levelsFootnote
         case languageFootnote
+        case floatingPanelFootnote
+        case githubFeaturesFootnote
     }
 
     private func text(_ key: Key) -> String {
@@ -112,11 +124,17 @@ public struct CinemaModeCopy {
         case .levelsSection: return "Levels"
         case .languageSection: return "Language"
         case .volumeLabel: return "Volume"
+        case .floatingPanelSection: return "Floating Control"
+        case .floatingPanelSizeLabel: return "Size"
+        case .githubFeaturesSection: return "GitHub Features"
+        case .dockAutoHideLabel: return "Temporarily auto-hide Dock"
         case .languageSystem: return "System"
         case .languageChinese: return "Chinese"
         case .languageEnglish: return "English"
         case .levelsFootnote: return "This setting applies to the current system output volume."
         case .languageFootnote: return "System follows the current macOS language."
+        case .floatingPanelFootnote: return "The floating control remembers its last position and stays inside the current screen."
+        case .githubFeaturesFootnote: return "GitHub edition only. The app restores your original Dock setting when cinema mode exits."
         }
     }
 
@@ -137,11 +155,17 @@ public struct CinemaModeCopy {
         case .levelsSection: return "强度"
         case .languageSection: return "语言"
         case .volumeLabel: return "音量"
+        case .floatingPanelSection: return "浮窗"
+        case .floatingPanelSizeLabel: return "大小"
+        case .githubFeaturesSection: return "GitHub 版功能"
+        case .dockAutoHideLabel: return "观影时临时自动隐藏 Dock"
         case .languageSystem: return "系统"
         case .languageChinese: return "中文"
         case .languageEnglish: return "英文"
         case .levelsFootnote: return "这个设置会影响当前系统输出音量。"
         case .languageFootnote: return "系统会跟随当前 macOS 语言。"
+        case .floatingPanelFootnote: return "浮窗会记住上次拖拽位置，并始终限制在当前屏幕可见范围内。"
+        case .githubFeaturesFootnote: return "仅 GitHub 分发版提供。退出观影模式后会自动恢复用户原来的 Dock 设置。"
         }
     }
 }

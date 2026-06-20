@@ -67,7 +67,10 @@ public final class CinemaModeService: ObservableObject {
             environmentSnapshot = capturedEnvironmentSnapshot
 
             try presentationController.applyCinemaMode(using: capturedSnapshot)
-            try environmentPreferencesController.applyPreferences(from: preferencesStore)
+            try environmentPreferencesController.applyPreferences(
+                from: preferencesStore,
+                after: presentationController.transitionDelay(for: .enterEnvironment)
+            )
 
             let windowState = FloatingWindowState(
                 anchor: effectiveAnchor,
@@ -144,7 +147,11 @@ public final class CinemaModeService: ObservableObject {
         do {
             try presentationController.restore(from: currentSnapshot)
             if let environmentSnapshot {
-                try environmentPreferencesController.restore(from: environmentSnapshot, preferences: preferencesStore)
+                try environmentPreferencesController.restore(
+                    from: environmentSnapshot,
+                    preferences: preferencesStore,
+                    after: presentationController.transitionDelay(for: .exitEnvironment)
+                )
             }
             snapshot = nil
             environmentSnapshot = nil
@@ -197,7 +204,11 @@ public final class CinemaModeService: ObservableObject {
             do {
                 try presentationController.restore(from: currentSnapshot)
                 if let environmentSnapshot {
-                    try environmentPreferencesController.restore(from: environmentSnapshot, preferences: preferencesStore)
+                    try environmentPreferencesController.restore(
+                        from: environmentSnapshot,
+                        preferences: preferencesStore,
+                        after: presentationController.transitionDelay(for: .exitEnvironment)
+                    )
                 }
                 snapshot = nil
                 self.environmentSnapshot = nil
@@ -249,7 +260,11 @@ public final class CinemaModeService: ObservableObject {
             do {
                 try presentationController.restore(from: currentSnapshot)
                 if let environmentSnapshot {
-                    try environmentPreferencesController.restore(from: environmentSnapshot, preferences: preferencesStore)
+                    try environmentPreferencesController.restore(
+                        from: environmentSnapshot,
+                        preferences: preferencesStore,
+                        after: presentationController.transitionDelay(for: .exitEnvironment)
+                    )
                 }
                 logger.warn(
                     module: "presentation",

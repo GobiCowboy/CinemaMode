@@ -3,6 +3,7 @@ import CinemaModeCore
 
 @MainActor
 final class AppEnvironment: ObservableObject {
+    let edition: AppEdition
     let logger: SystemLogger
     let presentationController: SystemPresentationController
     let environmentPreferencesController: SystemEnvironmentPreferencesController
@@ -14,14 +15,16 @@ final class AppEnvironment: ObservableObject {
     let service: CinemaModeService
 
     init() {
+        let edition = AppEdition.current
         let logger = SystemLogger(subsystem: "com.cinemamode.app", category: "core")
-        let presentationController = SystemPresentationController(logger: logger)
-        let environmentPreferencesController = SystemEnvironmentPreferencesController(logger: logger)
-        let floatingPanelController = FloatingPanelController(logger: logger)
         let preferencesStore = PreferencesStore()
-        let settingsWindowController = SettingsWindowController(preferences: preferencesStore)
+        let presentationController = SystemPresentationController(logger: logger)
+        let environmentPreferencesController = SystemEnvironmentPreferencesController(logger: logger, edition: edition)
+        let floatingPanelController = FloatingPanelController(logger: logger)
+        let settingsWindowController = SettingsWindowController(preferences: preferencesStore, edition: edition)
         let pointerMonitor = SystemPointerActivityMonitor(logger: logger)
 
+        self.edition = edition
         self.logger = logger
         self.presentationController = presentationController
         self.environmentPreferencesController = environmentPreferencesController
@@ -44,5 +47,9 @@ final class AppEnvironment: ObservableObject {
             preferencesStore: preferencesStore
         )
         self.menuBarStatusItemController.setVisible(true)
+    }
+
+    func openSettings() {
+        settingsWindowController.openSettings()
     }
 }
