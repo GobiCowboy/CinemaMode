@@ -58,6 +58,8 @@ cat >"$INFO_PLIST" <<PLIST
   <string>1</string>
   <key>CinemaModeEdition</key>
   <string>$APP_EDITION</string>
+  <key>NSAppleEventsUsageDescription</key>
+  <string>Cinema Mode uses Apple Events to adjust the system output volume during viewing mode.</string>
   <key>LSMinimumSystemVersion</key>
   <string>$MIN_SYSTEM_VERSION</string>
   <key>LSUIElement</key>
