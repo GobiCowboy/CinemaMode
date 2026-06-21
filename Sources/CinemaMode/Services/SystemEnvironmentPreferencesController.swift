@@ -1,6 +1,7 @@
 import AppKit
 import CinemaModeCore
 import Foundation
+import CoreGraphics
 
 @MainActor
 final class SystemEnvironmentPreferencesController: EnvironmentPreferencesControlling {

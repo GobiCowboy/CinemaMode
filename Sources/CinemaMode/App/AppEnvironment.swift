@@ -21,7 +21,7 @@ final class AppEnvironment: ObservableObject {
         let preferencesStore = PreferencesStore()
         let presentationController = SystemPresentationController(logger: logger)
         let environmentPreferencesController = SystemEnvironmentPreferencesController(logger: logger, edition: edition)
-        let floatingPanelController = FloatingPanelController(logger: logger)
+        let floatingPanelController = FloatingPanelController(logger: logger, preferencesStore: preferencesStore)
         let feedbackBannerController = SystemFeedbackBannerController(logger: logger)
         let settingsWindowController = SettingsWindowController(preferences: preferencesStore, edition: edition)
         let pointerMonitor = SystemPointerActivityMonitor(logger: logger)

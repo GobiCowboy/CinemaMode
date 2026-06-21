@@ -5,6 +5,7 @@ import CinemaModeCore
 @MainActor
 final class FloatingPanelController: NSObject, FloatingPanelControlling {
     private let logger: SystemLogger
+    private let preferencesStore: PreferencesStore
     private var panel: FloatingPanel?
     private var model = FloatingWindowModel()
     private var currentState = FloatingWindowState()
@@ -14,8 +15,9 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
         panel?.isVisible == true
     }
 
-    init(logger: SystemLogger) {
+    init(logger: SystemLogger, preferencesStore: PreferencesStore) {
         self.logger = logger
+        self.preferencesStore = preferencesStore
         super.init()
     }
 
@@ -134,12 +136,19 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
         )
 
         panel.setFrameOrigin(origin)
+        persistFloatingPanelOrigin(from: panel)
+        currentState = currentState.withAnchor(.custom)
+        preferencesStore.preferredFloatingAnchorRawValue = FloatingAnchor.custom.rawValue
+        model.state = currentState
 
         logger.info(
             module: "floatingPanel",
             action: "reposition",
             message: "Exit floating panel repositioned",
-            context: ["anchor": currentState.anchor.rawValue]
+            context: [
+                "anchor": currentState.anchor.rawValue,
+                "origin": "\(Int(origin.x)),\(Int(origin.y))"
+            ]
         )
     }
 
@@ -148,15 +157,67 @@ final class FloatingPanelController: NSObject, FloatingPanelControlling {
             return
         }
 
-        let visibleFrame = NSScreen.main?.visibleFrame ?? NSScreen.screens.first?.visibleFrame ?? .zero
+        let visibleFrame = panel.screen?.visibleFrame ?? NSScreen.main?.visibleFrame ?? NSScreen.screens.first?.visibleFrame ?? .zero
         let size = CGSize(width: 72, height: 72)
-        let margin: CGFloat = 22
-        let origin = CGPoint(
-            x: visibleFrame.maxX - size.width - margin,
-            y: visibleFrame.maxY - size.height - margin
-        )
 
+        if let storedOrigin = restoredFloatingPanelOrigin(for: panel) {
+            panel.setFrame(CGRect(origin: storedOrigin, size: size), display: true)
+            currentState.screenIdentifier = screenIdentifier(for: panel.screen)
+            return
+        }
+
+        let origin = origin(for: currentState.anchor, visibleFrame: visibleFrame, size: size)
         panel.setFrame(CGRect(origin: origin, size: size), display: true)
+        currentState.screenIdentifier = screenIdentifier(for: panel.screen)
+    }
+
+    private func restoredFloatingPanelOrigin(for panel: NSPanel) -> CGPoint? {
+        guard let storedOrigin = preferencesStore.floatingPanelOrigin else {
+            return nil
+        }
+
+        if preferencesStore.preferredFloatingAnchor != .custom {
+            return nil
+        }
+
+        if let storedScreenIdentifier = preferencesStore.floatingPanelScreenIdentifier,
+           let currentScreenIdentifier = screenIdentifier(for: panel.screen),
+           storedScreenIdentifier != currentScreenIdentifier {
+            return nil
+        }
+
+        return storedOrigin
+    }
+
+    private func persistFloatingPanelOrigin(from panel: NSPanel) {
+        let origin = panel.frame.origin
+        preferencesStore.floatingPanelOrigin = origin
+        preferencesStore.floatingPanelScreenIdentifier = screenIdentifier(for: panel.screen)
+        currentState.screenIdentifier = preferencesStore.floatingPanelScreenIdentifier
+    }
+
+    private func origin(for anchor: FloatingAnchor, visibleFrame: CGRect, size: CGSize) -> CGPoint {
+        let margin: CGFloat = 22
+        switch anchor {
+        case .custom:
+            return origin(for: .topRight, visibleFrame: visibleFrame, size: size)
+        case .topLeft:
+            return CGPoint(x: visibleFrame.minX + margin, y: visibleFrame.maxY - size.height - margin)
+        case .topRight:
+            return CGPoint(x: visibleFrame.maxX - size.width - margin, y: visibleFrame.maxY - size.height - margin)
+        case .bottomLeft:
+            return CGPoint(x: visibleFrame.minX + margin, y: visibleFrame.minY + margin)
+        case .bottomRight:
+            return CGPoint(x: visibleFrame.maxX - size.width - margin, y: visibleFrame.minY + margin)
+        }
+    }
+
+    private func screenIdentifier(for screen: NSScreen?) -> String? {
+        guard let screen,
+              let number = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber else {
+            return nil
+        }
+        return number.stringValue
     }
 }
 

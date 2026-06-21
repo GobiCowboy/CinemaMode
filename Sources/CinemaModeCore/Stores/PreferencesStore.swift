@@ -8,6 +8,15 @@ public final class PreferencesStore: ObservableObject {
         didSet { defaults.set(preferredVolume, forKey: Keys.preferredVolume) }
     }
 
+    @Published public var preferredFloatingAnchorRawValue: String {
+        didSet {
+            defaults.set(preferredFloatingAnchorRawValue, forKey: Keys.preferredFloatingAnchor)
+            if preferredFloatingAnchor != .custom {
+                clearFloatingPanelOrigin()
+            }
+        }
+    }
+
     @Published public var restoreVolumeOnExit: Bool {
         didSet { defaults.set(restoreVolumeOnExit, forKey: Keys.restoreVolumeOnExit) }
     }
@@ -21,11 +30,11 @@ public final class PreferencesStore: ObservableObject {
     }
 
     @Published public var floatingPanelOriginX: Double? {
-        didSet { storeFloatingPanelOrigin() }
+        didSet { storeFloatingPanelOriginIfNeeded() }
     }
 
     @Published public var floatingPanelOriginY: Double? {
-        didSet { storeFloatingPanelOrigin() }
+        didSet { storeFloatingPanelOriginIfNeeded() }
     }
 
     @Published public var floatingPanelScreenIdentifier: String? {
@@ -37,6 +46,8 @@ public final class PreferencesStore: ObservableObject {
     }
 
     private let defaults: UserDefaults
+    private var isResettingFloatingPanelOrigin = false
+    private var isUpdatingFloatingPanelOrigin = false
 
     public init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -46,10 +57,12 @@ public final class PreferencesStore: ObservableObject {
             Keys.restoreVolumeOnExit: true,
             Keys.preferredLanguage: AppLanguage.system.rawValue,
             Keys.floatingPanelScale: 1.0,
+            Keys.preferredFloatingAnchor: FloatingAnchor.topRight.rawValue,
             Keys.temporarilyAutoHideDock: true
         ])
 
         preferredVolume = defaults.double(forKey: Keys.preferredVolume)
+        preferredFloatingAnchorRawValue = defaults.string(forKey: Keys.preferredFloatingAnchor) ?? FloatingAnchor.topRight.rawValue
         restoreVolumeOnExit = defaults.bool(forKey: Keys.restoreVolumeOnExit)
         preferredLanguageRawValue = defaults.string(forKey: Keys.preferredLanguage) ?? AppLanguage.system.rawValue
         floatingPanelScale = defaults.double(forKey: Keys.floatingPanelScale)
@@ -73,6 +86,10 @@ public final class PreferencesStore: ObservableObject {
         preferredVolume / 100.0
     }
 
+    public var preferredFloatingAnchor: FloatingAnchor {
+        FloatingAnchor(rawValue: preferredFloatingAnchorRawValue) ?? .topRight
+    }
+
     public var floatingPanelOrigin: CGPoint? {
         get {
             guard let floatingPanelOriginX, let floatingPanelOriginY else {
@@ -81,8 +98,11 @@ public final class PreferencesStore: ObservableObject {
             return CGPoint(x: floatingPanelOriginX, y: floatingPanelOriginY)
         }
         set {
+            isUpdatingFloatingPanelOrigin = true
             floatingPanelOriginX = newValue.map { Double($0.x) }
             floatingPanelOriginY = newValue.map { Double($0.y) }
+            isUpdatingFloatingPanelOrigin = false
+            storeFloatingPanelOriginIfNeeded()
         }
     }
 
@@ -90,18 +110,32 @@ public final class PreferencesStore: ObservableObject {
         Int((floatingPanelScale * 100).rounded())
     }
 
-    private func storeFloatingPanelOrigin() {
+    private func storeFloatingPanelOriginIfNeeded() {
+        guard !isResettingFloatingPanelOrigin, !isUpdatingFloatingPanelOrigin else {
+            return
+        }
+
         if let floatingPanelOriginX, let floatingPanelOriginY {
             defaults.set(floatingPanelOriginX, forKey: Keys.floatingPanelOriginX)
             defaults.set(floatingPanelOriginY, forKey: Keys.floatingPanelOriginY)
-        } else {
-            defaults.removeObject(forKey: Keys.floatingPanelOriginX)
-            defaults.removeObject(forKey: Keys.floatingPanelOriginY)
+            defaults.set(floatingPanelScreenIdentifier, forKey: Keys.floatingPanelScreenIdentifier)
         }
+    }
+
+    private func clearFloatingPanelOrigin() {
+        isResettingFloatingPanelOrigin = true
+        floatingPanelOriginX = nil
+        floatingPanelOriginY = nil
+        floatingPanelScreenIdentifier = nil
+        isResettingFloatingPanelOrigin = false
+        defaults.removeObject(forKey: Keys.floatingPanelOriginX)
+        defaults.removeObject(forKey: Keys.floatingPanelOriginY)
+        defaults.removeObject(forKey: Keys.floatingPanelScreenIdentifier)
     }
 
     private enum Keys {
         static let preferredVolume = "preferences.preferredVolume"
+        static let preferredFloatingAnchor = "preferences.preferredFloatingAnchor"
         static let restoreVolumeOnExit = "preferences.restoreVolumeOnExit"
         static let preferredLanguage = "preferences.preferredLanguage"
         static let floatingPanelScale = "preferences.floatingPanelScale"

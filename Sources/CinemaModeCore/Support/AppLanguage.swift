@@ -55,6 +55,12 @@ public struct CinemaModeCopy {
     public var levelsSection: String { text(.levelsSection) }
     public var languageSection: String { text(.languageSection) }
     public var volumeLabel: String { text(.volumeLabel) }
+    public var floatingPanelCustomLabel: String { text(.floatingPanelCustomLabel) }
+    public var floatingPanelAnchorLabel: String { text(.floatingPanelAnchorLabel) }
+    public var floatingPanelAnchorTopLeft: String { text(.floatingPanelAnchorTopLeft) }
+    public var floatingPanelAnchorTopRight: String { text(.floatingPanelAnchorTopRight) }
+    public var floatingPanelAnchorBottomLeft: String { text(.floatingPanelAnchorBottomLeft) }
+    public var floatingPanelAnchorBottomRight: String { text(.floatingPanelAnchorBottomRight) }
     public var floatingPanelSection: String { text(.floatingPanelSection) }
     public var floatingPanelSizeLabel: String { text(.floatingPanelSizeLabel) }
     public var githubFeaturesSection: String { text(.githubFeaturesSection) }
@@ -93,6 +99,12 @@ public struct CinemaModeCopy {
         case levelsSection
         case languageSection
         case volumeLabel
+        case floatingPanelCustomLabel
+        case floatingPanelAnchorLabel
+        case floatingPanelAnchorTopLeft
+        case floatingPanelAnchorTopRight
+        case floatingPanelAnchorBottomLeft
+        case floatingPanelAnchorBottomRight
         case floatingPanelSection
         case floatingPanelSizeLabel
         case githubFeaturesSection
@@ -142,6 +154,12 @@ public struct CinemaModeCopy {
         case .levelsSection: return "Levels"
         case .languageSection: return "Language"
         case .volumeLabel: return "Volume"
+        case .floatingPanelCustomLabel: return "Custom"
+        case .floatingPanelAnchorLabel: return "Position"
+        case .floatingPanelAnchorTopLeft: return "Top Left"
+        case .floatingPanelAnchorTopRight: return "Top Right"
+        case .floatingPanelAnchorBottomLeft: return "Bottom Left"
+        case .floatingPanelAnchorBottomRight: return "Bottom Right"
         case .floatingPanelSection: return "Floating Control"
         case .floatingPanelSizeLabel: return "Size"
         case .githubFeaturesSection: return "GitHub Features"
@@ -181,6 +199,12 @@ public struct CinemaModeCopy {
         case .levelsSection: return "强度"
         case .languageSection: return "语言"
         case .volumeLabel: return "音量"
+        case .floatingPanelCustomLabel: return "自定义"
+        case .floatingPanelAnchorLabel: return "位置"
+        case .floatingPanelAnchorTopLeft: return "左上"
+        case .floatingPanelAnchorTopRight: return "右上"
+        case .floatingPanelAnchorBottomLeft: return "左下"
+        case .floatingPanelAnchorBottomRight: return "右下"
         case .floatingPanelSection: return "浮窗"
         case .floatingPanelSizeLabel: return "大小"
         case .githubFeaturesSection: return "GitHub 版功能"

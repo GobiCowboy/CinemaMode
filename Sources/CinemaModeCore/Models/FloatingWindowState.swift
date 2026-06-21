@@ -34,6 +34,12 @@ public struct FloatingWindowState: Equatable, Sendable {
         return copy
     }
 
+    public func withAnchor(_ anchor: FloatingAnchor) -> FloatingWindowState {
+        var copy = self
+        copy.anchor = anchor
+        return copy
+    }
+
     public func withVisibility(_ isVisible: Bool) -> FloatingWindowState {
         var copy = self
         copy.isVisible = isVisible

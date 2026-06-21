@@ -44,7 +44,7 @@ public final class CinemaModeService: ObservableObject {
             recoverIfNeeded()
         }
 
-        let effectiveAnchor = FloatingAnchor.topRight
+        let effectiveAnchor = preferencesStore.preferredFloatingAnchor
 
         guard phase == .idle else {
             logger.warn(

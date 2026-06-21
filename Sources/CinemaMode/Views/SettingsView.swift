@@ -24,6 +24,19 @@ struct SettingsView: View {
             Section {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
+                        Label(copy.floatingPanelAnchorLabel, systemImage: "arrow.up.left.and.arrow.down.right")
+                        Spacer()
+                    }
+                    Picker("", selection: $preferences.preferredFloatingAnchorRawValue) {
+                        Text(copy.floatingPanelCustomLabel).tag(FloatingAnchor.custom.rawValue)
+                        Text(copy.floatingPanelAnchorTopLeft).tag(FloatingAnchor.topLeft.rawValue)
+                        Text(copy.floatingPanelAnchorTopRight).tag(FloatingAnchor.topRight.rawValue)
+                        Text(copy.floatingPanelAnchorBottomLeft).tag(FloatingAnchor.bottomLeft.rawValue)
+                        Text(copy.floatingPanelAnchorBottomRight).tag(FloatingAnchor.bottomRight.rawValue)
+                    }
+                    .pickerStyle(.segmented)
+
+                    HStack {
                         Label(copy.floatingPanelSizeLabel, systemImage: "capsule.lefthalf.filled")
                         Spacer()
                         Text("\(preferences.floatingPanelScalePercentage)%")
