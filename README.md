@@ -1,5 +1,6 @@
 # Cinema Mode for Mac
 
+[![中文](https://img.shields.io/badge/中文-README_ZH-blue.svg)](README_ZH.md)
 [![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)](https://swift.org)
 [![Platform](https://img.shields.io/badge/Platform-macOS%2014+-blue.svg)](https://developer.apple.com/macos/)
 
@@ -13,10 +14,6 @@ A lightweight macOS menu bar app. One click to dim your screen and hide distract
   <tr>
     <td><img src="docs/screenshots/en-active.png" width="450"></td>
     <td><img src="docs/screenshots/en-noactive.png" width="450"></td>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/zh-active.png" width="450"></td>
-    <td><img src="docs/screenshots/zh-disactive.png" width="450"></td>
   </tr>
 </table>
 

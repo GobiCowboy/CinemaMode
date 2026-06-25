@@ -1,5 +1,6 @@
 # Cinema Mode
 
+[![English](https://img.shields.io/badge/English-README-blue.svg)](README.md)
 [![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)](https://swift.org)
 [![平台](https://img.shields.io/badge/平台-macOS%2014+-blue.svg)](https://developer.apple.com/macos/)
 
@@ -8,6 +9,15 @@
 一款轻量级 macOS 菜单栏工具。一键隐藏菜单栏和 Dock，让屏幕只保留你想看的内容。
 
 打开，点击，观影。就三步。
+
+## 截图
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/zh-active.png" width="450"></td>
+    <td><img src="docs/screenshots/zh-disactive.png" width="450"></td>
+  </tr>
+</table>
 
 ## 它能做什么
 
