@@ -75,7 +75,7 @@ If CinemaMode made your movie nights a little better, a Star is much appreciated
 If CinemaMode saved you from menu bar chaos, consider supporting ☕
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/GobiCowboy/CinemaMode/master/docs/screenshots/donation/微信收款码.png" width="150" alt="WeChat">
+  <img src="https://raw.githubusercontent.com/GobiCowboy/CinemaMode/master/docs/screenshots/donation/微信收款码.png" height="150" alt="WeChat">
   &nbsp;&nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/GobiCowboy/CinemaMode/master/docs/screenshots/donation/支付宝收款码.png" width="150" alt="Alipay">
+  <img src="https://raw.githubusercontent.com/GobiCowboy/CinemaMode/master/docs/screenshots/donation/支付宝收款码.png" height="150" alt="Alipay">
 </p>
