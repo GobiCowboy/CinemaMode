@@ -3,8 +3,9 @@
 [![中文](https://img.shields.io/badge/中文-README_ZH-blue.svg)](README_ZH.md)
 [![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)](https://swift.org)
 [![Platform](https://img.shields.io/badge/Platform-macOS%2014+-blue.svg)](https://developer.apple.com/macos/)
+[![Release](https://img.shields.io/github/v/release/GobiCowboy/CinemaMode?style=flat)](https://github.com/GobiCowboy/CinemaMode/releases/latest)
 
-> 🎬 **Available on the [App Store](https://apps.apple.com/cn/search?term=Cinema%20Mode%20for%20Mac)** — Search "Cinema Mode" to download.
+> 🎬 **[Download the latest release](https://github.com/GobiCowboy/CinemaMode/releases/latest)** — or grab it on the [App Store](https://apps.apple.com/cn/search?term=Cinema%20Mode%20for%20Mac).
 
 A lightweight macOS menu bar app. One click to dim your screen and hide distractions — so you can focus on what you're watching.
 
@@ -26,9 +27,9 @@ A lightweight macOS menu bar app. One click to dim your screen and hide distract
 
 ## Get it
 
-**Easiest way:** Search **"Cinema Mode"** on the [Mac App Store](https://apps.apple.com/cn/search?term=Cinema%20Mode%20for%20Mac) and download it directly.
+**Direct download:** Grab the latest release from [GitHub Releases](https://github.com/GobiCowboy/CinemaMode/releases/latest).
 
-**Direct download:** Grab the latest release from the [GitHub Releases page](https://github.com/GobiCowboy/CinemaMode/releases/latest).
+**Easiest way:** Search **"Cinema Mode"** on the [Mac App Store](https://apps.apple.com/cn/search?term=Cinema%20Mode%20for%20Mac) and download it directly.
 
 **From source:** Clone this repo and run `./script/build_and_run.sh`. See [Build & Run](#build--run) below.
 
