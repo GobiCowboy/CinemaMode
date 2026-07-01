@@ -3,14 +3,15 @@ set -euo pipefail
 
 MODE="${1:-run}"
 APP_NAME="CinemaMode"
+APP_DISPLAY_NAME="Cinema Mode"
 BUNDLE_ID="com.cinemamode.app"
 MIN_SYSTEM_VERSION="14.0"
 APP_EDITION="${CINEMA_MODE_EDITION:-appstore}"
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DIST_DIR="$ROOT_DIR/dist"
-APP_BUNDLE="$DIST_DIR/$APP_NAME.app"
-INSTALL_BUNDLE="/Applications/$APP_NAME.app"
+APP_BUNDLE="$DIST_DIR/$APP_DISPLAY_NAME.app"
+INSTALL_BUNDLE="/Applications/$APP_DISPLAY_NAME.app"
 APP_CONTENTS="$APP_BUNDLE/Contents"
 APP_MACOS="$APP_CONTENTS/MacOS"
 APP_RESOURCES="$APP_CONTENTS/Resources"

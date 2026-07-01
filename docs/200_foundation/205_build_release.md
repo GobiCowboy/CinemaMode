@@ -1,9 +1,26 @@
 # 205 构建和发布
 
+## 0. 命名规范
+
+| 名称 | 值 | 说明 |
+|------|-----|------|
+| App Bundle 显示名 | `Cinema Mode.app` | 带空格，用户看到的名称 |
+| 内部二进制名 | `CinemaMode` | 无空格，系统内部标识 |
+| DIST 产物 zip | `CinemaMode-0.1.0.zip` | 不含版本号后缀 |
+| `CFBundleName` | `CinemaMode` | Info.plist 内部标识 |
+| 安装路径 | `/Applications/Cinema Mode.app` | `build_and_run.sh` 默认安装位置 |
+
+`build_and_run.sh` 中使用 `APP_DISPLAY_NAME` 控制 .app 文件名，`APP_NAME` 控制内部二进制名，两者分离以避免空格问题。
+
 ## 1. 构建
 
-当前阶段已创建 Xcode 工程 `CinemaMode.xcodeproj`，可直接用于 archive 与后续发布配置。
+快速构建（SwiftPM + build_and_run.sh）：
+```bash
+swift build --configuration Release
+./script/build_and_run.sh run    # 签名、打包、安装到 /Applications、启动
+```
 
+Xcode 工程也可用于 archive 与 App Store 发布：
 ```bash
 # Debug 构建
 xcodebuild -scheme CinemaMode -project CinemaMode.xcodeproj -configuration Debug -destination 'platform=macOS' build
@@ -54,10 +71,17 @@ xcodebuild -exportArchive -archivePath dist/CinemaMode.xcarchive -exportPath dis
 
 | 产物 | 路径 | 用途 |
 |------|------|------|
-| `.app` | `build/Release/CinemaMode.app` | 本地运行和打包 |
-| `.dmg` | `dist/CinemaMode-<version>.dmg` | 面向普通用户分发 |
-| `.zip` | `dist/CinemaMode-<version>.zip` | 备用分发 |
-| Release notes | `docs/990_archive/releases/` 或 GitHub Release | 记录版本变化 |
+| `.app` | `dist/Cinema Mode.app` | 本地运行和分发 |
+| `.zip` | `dist/CinemaMode-0.1.0.zip` | 公证上传和 GitHub 分发 |
+| Release notes | GitHub Release | 记录版本变化 |
+
+### 命名规范
+
+- **App Bundle 名（显示名）**：`Cinema Mode.app`（带空格，即 `APP_DISPLAY_NAME`）
+- **内部二进制名**：`CinemaMode`（无空格，即 `APP_NAME`）
+- **DIST 产物 zip**：`CinemaMode-0.1.0.zip`（不含版本号后缀）
+- **`CFBundleName`**：`CinemaMode`（系统内部标识，不含空格）
+- **安装路径**：默认安装到 `/Applications/Cinema Mode.app`
 
 ## 5. 签名和公证
 
@@ -100,25 +124,29 @@ xcrun notarytool store-credentials “Apple-Notary” \
 ### 完整发布流程（签名 → 公证 → Stapler）
 
 ```bash
-# 1. Developer ID 签名 + hardened runtime
+# 1. 构建 Release（生成到 dist/Cinema Mode.app）
+swift build --configuration Release
+./script/build_and_run.sh run
+
+# 2. Developer ID 签名 + hardened runtime
 codesign --force --deep --options runtime --timestamp \
   -s “Developer ID Application: jin guo (4UNNXY925R)” \
-  “dist/CinemaMode-0.1.0.app”
+  “/Applications/Cinema Mode.app”
 
-# 2. 打包 zip（公证只能上传 zip，不能直接传 .app）
+# 3. 打包 zip（公证只能上传 zip，不能直接传 .app）
 ditto -c -k --sequesterRsrc --keepParent \
-  “dist/CinemaMode-0.1.0.app” “dist/CinemaMode-0.1.0.zip”
+  “/Applications/Cinema Mode.app” “dist/CinemaMode-0.1.0.zip”
 
-# 3. 提交公证
+# 4. 提交公证
 xcrun notarytool submit “dist/CinemaMode-0.1.0.zip” \
   --keychain-profile “Apple-Notary” --wait
 
-# 4. Stapler 写入公证票据（只对 .app 生效，zip 不能 stapler）
-xcrun stapler staple “dist/CinemaMode-0.1.0.app”
+# 5. Stapler 写入公证票据（只对 .app 生效，zip 不能 stapler）
+xcrun stapler staple “/Applications/Cinema Mode.app”
 
-# 5. 验证
-codesign --verify --deep --strict --verbose=2 “dist/CinemaMode-0.1.0.app”
-spctl -a -vv “dist/CinemaMode-0.1.0.app”
+# 6. 验证
+codesign --verify --deep --strict --verbose=2 “/Applications/Cinema Mode.app”
+spctl -a -vv “/Applications/Cinema Mode.app”
 ```
 
 验证通过后 `spctl` 应输出 `source=Notarized Developer ID`。
