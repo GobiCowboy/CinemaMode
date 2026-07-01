@@ -28,6 +28,8 @@ A lightweight macOS menu bar app. One click to dim your screen and hide distract
 
 **Easiest way:** Search **"Cinema Mode"** on the [Mac App Store](https://apps.apple.com/cn/search?term=Cinema%20Mode%20for%20Mac) and download it directly.
 
+**Direct download:** Grab the latest release from the [GitHub Releases page](https://github.com/GobiCowboy/CinemaMode/releases/latest).
+
 **From source:** Clone this repo and run `./script/build_and_run.sh`. See [Build & Run](#build--run) below.
 
 ## Requirements
