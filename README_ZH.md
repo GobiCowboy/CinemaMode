@@ -77,7 +77,7 @@ open CinemaMode.xcodeproj
 如果你觉得 CinemaMode 帮你省了不少麻烦，欢迎支持一下 ☕
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/GobiCowboy/CinemaMode/main/docs/screenshots/donation/微信收款码.png" width="150" alt="微信赞赏">
+  <img src="https://raw.githubusercontent.com/GobiCowboy/CinemaMode/master/docs/screenshots/donation/微信收款码.png" width="150" alt="微信赞赏">
   &nbsp;&nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/GobiCowboy/CinemaMode/main/docs/screenshots/donation/支付宝收款码.png" width="150" alt="支付宝赞赏">
+  <img src="https://raw.githubusercontent.com/GobiCowboy/CinemaMode/master/docs/screenshots/donation/支付宝收款码.png" width="150" alt="支付宝赞赏">
 </p>
