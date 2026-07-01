@@ -67,3 +67,17 @@ open CinemaMode.xcodeproj
 ## 开源协议
 
 [MIT](LICENSE)
+
+## 如果觉得不错，给个 Star ⭐
+
+如果 CinemaMode 帮你让观影体验更舒服了一点，欢迎给个 Star，你的支持是我持续更新的最大动力 ✨
+
+## ☕ 请我喝杯咖啡
+
+如果你觉得 CinemaMode 帮你省了不少麻烦，欢迎支持一下 ☕
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/GobiCowboy/CinemaMode/main/docs/screenshots/donation/微信收款码.png" width="150" alt="微信赞赏">
+  &nbsp;&nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/GobiCowboy/CinemaMode/main/docs/screenshots/donation/支付宝收款码.png" width="150" alt="支付宝赞赏">
+</p>
