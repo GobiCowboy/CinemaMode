@@ -5,7 +5,7 @@
 [![平台](https://img.shields.io/badge/平台-macOS%2014+-blue.svg)](https://developer.apple.com/macos/)
 [![Release](https://img.shields.io/github/v/release/GobiCowboy/CinemaMode?style=flat)](https://github.com/GobiCowboy/CinemaMode/releases/latest)
 
-> 🎬 **[直接下载最新版](https://github.com/GobiCowboy/CinemaMode/releases/latest)** — 或前往 [App Store](https://apps.apple.com/cn/search?term=Cinema%20Mode%20for%20Mac) 搜索安装。
+> 🎬 **[直接下载最新版](https://github.com/GobiCowboy/CinemaMode/releases/latest)** — 或前往 [App Store](https://apps.apple.com/cn/mac/search?term=Cinema%20Mode) 搜索安装。
 
 一款轻量级 macOS 菜单栏工具。一键隐藏菜单栏和 Dock，让屏幕只保留你想看的内容。
 
@@ -31,7 +31,7 @@
 
 **直接下载：** 从 [GitHub Releases 页面](https://github.com/GobiCowboy/CinemaMode/releases/latest) 获取最新版本。
 
-**最简单的方式：** 前往 [Mac App Store](https://apps.apple.com/cn/search?term=Cinema%20Mode%20for%20Mac) 搜索 **「Cinema Mode」** 直接下载。
+**最简单的方式：** 前往 [Mac App Store](https://apps.apple.com/cn/mac/search?term=Cinema%20Mode) 搜索 **「Cinema Mode」** 直接下载。
 
 **从源码构建：** 克隆本仓库后运行 `./script/build_and_run.sh`，详见下方「构建与运行」。
 
