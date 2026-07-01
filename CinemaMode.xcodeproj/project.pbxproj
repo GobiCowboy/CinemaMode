@@ -247,6 +247,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9DAB97207891BC6094FB0A28 /* Build configuration list for PBXNativeTarget "CinemaMode" */;
 			buildPhases = (
+				402987518B1B1973FACFBAC4 /* Copy App Icon */,
 				95AB947D3C5137AA129AD9B2 /* Sources */,
 				C1987A93AE6F23637334F839 /* Frameworks */,
 				1B28B9F0E0B0C30031CAD5AA /* Embed Frameworks */,
@@ -297,6 +298,27 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		402987518B1B1973FACFBAC4 /* Copy App Icon */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy App Icon";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -euo pipefail\nicon_src=\"${PROJECT_DIR}/Resources/AppIcon.icns\"\nicon_dst=\"${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/Resources/AppIcon.icns\"\nmkdir -p \"${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/Resources\"\ncp \"${icon_src}\" \"${icon_dst}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		95AB947D3C5137AA129AD9B2 /* Sources */ = {

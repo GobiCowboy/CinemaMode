@@ -26,8 +26,14 @@ targets:
     platform: macOS
     sources:
       - path: Sources/CinemaMode
-    resources:
-      - path: Resources/AppIcon.icns
+    preBuildScripts:
+      - name: Copy App Icon
+        script: |
+          set -euo pipefail
+          icon_src="${PROJECT_DIR}/Resources/AppIcon.icns"
+          icon_dst="${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/Resources/AppIcon.icns"
+          mkdir -p "${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/Resources"
+          cp "${icon_src}" "${icon_dst}"
     dependencies:
       - target: CinemaModeCore
     settings:
